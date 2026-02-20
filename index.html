@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GCFM Mastery Dashboard</title>
     
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#2c3e50">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
 
     <style>
         :root { --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; --card-bg: #ffffff; }
@@ -128,7 +128,6 @@
                 grid.innerHTML += cardHtml;
             });
 
-            // Update Top Panel
             document.getElementById('total-progress').innerText = `${totalAns}/120`;
             document.getElementById('total-correct').innerText = totalCor;
             document.getElementById('total-wrong').innerText = totalWro;
@@ -144,16 +143,14 @@
             }
         }
 
-        // Initialize
         loadDashboard();
 
-        // Register Service Worker for PWA functionality (WITH CORRECT SCOPE)
+        // PWA SERVICE WORKER REGISTRATION
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // The './' ensures it routes correctly on GitHub Pages subfolders
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registered Successfully!', reg))
-                    .catch(err => console.error('Service Worker Registration Failed: ', err));
+                    .then(reg => console.log('SW Registered', reg))
+                    .catch(err => console.log('SW Failed', err));
             });
         }
     </script>
