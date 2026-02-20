@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery - Bonus Part 6 (Q101-120)</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #2980b9; --success: #27ae60; --danger: #e74c3c; --bg: #eaf2f8; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--secondary); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-between; font-size: 1.1em; margin-bottom: 20px; font-weight: bold; background: #d4e6f1; padding: 15px; border-radius: 8px; }
+        .topic-badge { background: var(--secondary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; text-transform: uppercase; display: inline-block; margin-bottom: 15px; font-weight: bold; }
+        .question-text { font-size: 1.2em; margin-bottom: 20px; font-weight: 600; color: var(--primary); }
+        .img-box { text-align: center; margin-bottom: 20px; }
+        .img-box img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #bdc3c7; background: #eee; }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option { background: #f8f9fa; border: 2px solid #bdc3c7; padding: 15px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.05em; }
+        .option:hover { background: #a9cce3; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .justification { margin-top: 25px; padding: 20px; background: #ebf5fb; border-left: 6px solid var(--secondary); display: none; border-radius: 4px; }
+        .justification h4 { margin-top: 0; color: var(--secondary); }
+        .ref { display: block; margin-top: 15px; font-weight: bold; font-style: italic; color: #7f8c8d; font-size: 0.9em; }
+        .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; background: var(--secondary); color: white; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #1f618d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GCFM Exam Simulator (Part 6: Curriculum Gaps)</h1>
+    
+    <div class="stats" id="score-board">
+        <span>Question: <span id="current-q">101</span>/120</span>
+        <span style="color: var(--success);">Correct: <span id="correct-count">0</span></span>
+        <span style="color: var(--danger);">Wrong: <span id="wrong-count">0</span></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-controls">
+        <button id="prev-btn" onclick="changeQuestion(-1)" disabled>Previous</button>
+        <button id="next-btn" onclick="changeQuestion(1)">Next Question</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        topic: "Women's Health - Cervical Screening",
+        q: "A 35-year-old healthy woman comes for routine cervical cancer screening. She is sexually active. A primary High-Risk HPV (hrHPV) DNA swab is performed and returns NEGATIVE. Her cervix is visually normal. According to the current Malaysian guidelines, when should her next screening be scheduled?",
+        imgBase64: "",
+        options: [
+            "Repeat hrHPV testing in 1 year",
+            "Repeat a conventional Pap smear in 3 years",
+            "Repeat hrHPV testing in 5 years",
+            "Repeat hrHPV testing in 10 years",
+            "No further screening needed as she is negative"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Malaysia is transitioning from conventional Pap smears to primary HPV testing. According to the Malaysian MOH Guidelines on Cervical Cancer Screening, if a primary hrHPV DNA test is negative in a woman aged 30-65, her next screening (hrHPV test) is safely deferred for 5 years due to the high negative predictive value.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> 1-year and 3-year intervals were used for conventional Pap smears, but hrHPV testing allows for longer, safer intervals.<br><b>D & E:</b> 10 years is too long, and stopping screening altogether is only done at age 65 if previous consecutive tests were negative.",
+        ref: "Malaysian CPG Management of Cervical Cancer / Primary HPV Screening Guidelines."
+    },
+    {
+        topic: "Geriatrics - Osteoporosis",
+        q: "A 72-year-old woman is found to have a DEXA scan T-score of -2.8 at the femoral neck and -2.6 at the lumbar spine. She has no previous history of fractures and her renal profile is normal. What is the most appropriate first-line pharmacological treatment?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2UgUGxhY2Vob2xkZXI6IERFWEEgU2NhbiBSZXBvcnRdPC90ZXh0Pjwvc3ZnPg==",
+        options: [
+            "Calcium and Vitamin D supplements only",
+            "Oral Alendronate",
+            "Intravenous Zoledronic acid",
+            "Hormone Replacement Therapy (Estrogen)",
+            "Teriparatide (PTH analogue)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>A DEXA T-score of ? -2.5 defines Osteoporosis. The first-line evidence-based pharmacological treatment for postmenopausal osteoporosis to prevent fragility fractures is an oral oral bisphosphonate (e.g., Alendronate) combined with Calcium and Vitamin D.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Calcium and Vit D are essential adjuncts but insufficient alone to reverse osteoporosis with a T-score of -2.8.<br><b>C:</b> IV Zoledronic acid is usually reserved for those intolerant of oral bisphosphonates or with severe GI contraindications.<br><b>D:</b> HRT is for menopausal symptoms in younger women, not first-line osteoporosis treatment at age 72 due to CV/stroke risks.<br><b>E:</b> Teriparatide is an anabolic agent used for severe, refractory osteoporosis with established multiple fractures.",
+        ref: "Malaysian CPG Management of Osteoporosis."
+    },
+    {
+        topic: "Men's Health - Prostate Cancer",
+        q: "A 68-year-old man complains of urinary hesitancy and nocturia. On Digital Rectal Examination (DRE), you palpate a hard, irregular, craggy nodule on the right lobe of the prostate. His Serum PSA is 18 ng/mL. What is the most appropriate next step to confirm the diagnosis?",
+        imgBase64: "",
+        options: [
+            "Start Oral Finasteride and repeat PSA in 6 months",
+            "Refer for Transrectal Ultrasound (TRUS) guided prostate biopsy",
+            "Refer for an urgent CT scan of the abdomen and pelvis",
+            "Prescribe a 4-week course of Ciprofloxacin",
+            "Perform a cystoscopy"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>A hard, irregular nodule on DRE combined with a significantly elevated PSA (> 4-10 ng/mL) is highly suspicious for Prostate Cancer. The gold standard to definitively diagnose and grade the cancer (Gleason score) is a TRUS-guided prostate biopsy by a urologist.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Finasteride artificially halves the PSA and treats BPH, delaying a critical cancer diagnosis.<br><b>C:</b> CT/MRI are for staging *after* biopsy confirmation, not primary tissue diagnosis.<br><b>D:</b> Antibiotics are for prostatitis (which would present with a very tender, boggy prostate and fever).<br><b>E:</b> Cystoscopy visualizes the bladder, not the prostate parenchyma.",
+        ref: "Malaysian CPG Management of Prostate Cancer."
+    },
+    {
+        topic: "Paediatrics - Child Abuse Reporting",
+        q: "A 3-year-old girl is brought to the clinic by her mother for a 'rash'. On examination, you discover multiple circular, uniform burn marks on her back and buttocks consistent with cigarette burns. The mother gives a vague and inconsistent history, claiming the child fell on hot stones. What is your mandatory legal and ethical action?",
+        imgBase64: "",
+        options: [
+            "Confront the mother aggressively to force a confession",
+            "Treat the burns, discharge, and schedule a follow-up next week",
+            "Admit the child and notify the Medical Social Worker/SCAN team and Police",
+            "Refer the child to a dermatologist for a second opinion",
+            "Advise the mother on child safety and home-proofing"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Under the Malaysian Child Act 2001, medical practitioners are legally mandated reporters. Suspected Non-Accidental Injury (NAI), especially highly specific lesions like cigarette burns with inconsistent histories, requires immediate admission for the child's safety, notification of the Suspected Child Abuse and Neglect (SCAN) team, Social Welfare (JKM), and Police.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Confrontation may cause the abuser to flee with the child, endangering the child further.<br><b>B, D, E:</b> Discharging the child sends them back into a life-threatening environment. Child protection takes absolute precedence over simple wound care.",
+        ref: "Malaysian Child Act 2001 / Guidelines on Management of Suspected Child Abuse."
+    },
+    {
+        topic: "Gastroenterology - IBS",
+        q: "A 28-year-old woman complains of chronic, crampy abdominal pain for 6 months. The pain is consistently relieved after she passes stool. She has alternating episodes of diarrhea and constipation. She has no weight loss, no blood in her stool, and her basic blood tests (FBC, CRP) are normal. What is the most appropriate first-line pharmacological treatment for her abdominal cramps?",
+        imgBase64: "",
+        options: [
+            "Oral Omeprazole",
+            "Oral Mebeverine (Antispasmodic)",
+            "Oral Prednisolone",
+            "Oral Ciprofloxacin",
+            "Refer for urgent colonoscopy"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient meets the Rome IV criteria for Irritable Bowel Syndrome (IBS): chronic abdominal pain related to defecation, associated with a change in stool frequency/form, without any alarm symptoms. The first-line pharmacological therapy for the crampy pain in IBS is an intestinal antispasmodic like Mebeverine or Hyoscine.<br><br><h4>Why the others are wrong:</h4><b>A:</b> PPIs treat upper GI acid issues (GERD/Dyspepsia), not lower GI bowel spasms.<br><b>C:</b> Steroids treat Inflammatory Bowel Disease (Crohn's/UC), which would present with bloody diarrhea, weight loss, and high CRP.<br><b>D:</b> Antibiotics are not indicated for IBS.<br><b>E:</b> Colonoscopy is not indicated in a young patient with classic IBS and ZERO alarm symptoms.",
+        ref: "Malaysian Society of Gastroenterology: Guidelines on IBS."
+    },
+    {
+        topic: "Infectious Disease - Hepatitis B in Pregnancy",
+        q: "A 26-year-old pregnant woman tests positive for HBsAg and HBeAg during her antenatal booking. She successfully delivers a full-term baby. To prevent vertical transmission, what is the most appropriate immediate management for the newborn?",
+        imgBase64: "",
+        options: [
+            "Administer Hepatitis B vaccine only within 24 hours",
+            "Administer Hepatitis B Immunoglobulin (HBIG) only within 24 hours",
+            "Administer both Hepatitis B vaccine and HBIG within 12 hours of birth",
+            "Start the newborn on Oral Tenofovir",
+            "Delay vaccination until the baby's Hepatitis B status is tested at 6 months"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>A mother who is HBeAg positive has a highly active viral load, carrying a 70-90% risk of vertical transmission to the baby. The standard of care to prevent this is active-passive immunoprophylaxis: giving both the Hepatitis B vaccine AND Hepatitis B Immunoglobulin (HBIG) at different injection sites within 12 hours of birth.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Neither the vaccine alone nor the immunoglobulin alone is sufficient to prevent transmission in a high-risk (HBeAg positive) exposure.<br><b>D:</b> Antivirals (Tenofovir) are given to the *mother* in the 3rd trimester if viral load is very high, not to the newborn.<br><b>E:</b> Delaying prophylaxis guarantees chronic Hepatitis B infection in the newborn.",
+        ref: "Malaysian CPG Management of Chronic Hepatitis B."
+    },
+    {
+        topic: "Dermatology - Acne Vulgaris",
+        q: "A 16-year-old boy presents with moderate facial acne. He has multiple open and closed comedones, along with numerous erythematous papules and pustules. He has been using over-the-counter Benzoyl Peroxide 5% wash for 3 months with minimal improvement. What is the most appropriate next step in therapy?",
+        imgBase64: "",
+        options: [
+            "Refer for Oral Isotretinoin",
+            "Add Topical Clindamycin and a Topical Retinoid (Adapalene)",
+            "Prescribe Oral Prednisolone",
+            "Perform physical extraction of all comedones in the clinic",
+            "Switch to Ketoconazole shampoo"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>For moderate inflammatory acne (papules/pustules) that fails basic benzoyl peroxide, the evidence-based 'stepped care' approach is to add a topical retinoid (which targets comedones and normalizes keratinization) and a topical antibiotic (Clindamycin) to target C. acnes. These are often given in a fixed-dose combination.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Oral Isotretinoin is reserved for severe, nodulocystic, or scarring acne, or acne completely refractory to systemic antibiotics.<br><b>C:</b> Oral steroids are not used for standard acne.<br><b>D:</b> Physical extraction does not treat the underlying pathogenic drivers of acne.<br><b>E:</b> Ketoconazole is for fungal infections (Pityrosporum folliculitis), not classical acne vulgaris.",
+        ref: "Malaysian Primary Care Dermatology / CPG Acne Vulgaris."
+    },
+    {
+        topic: "Law & Ethics - Fitness to Drive",
+        q: "A 30-year-old man, who works as a commercial lorry driver, suffers a generalized tonic-clonic seizure. He is diagnosed with Epilepsy and started on Levetiracetam. He asks you when he can return to driving his lorry. According to Malaysian Road Transport Department (JPJ) medical guidelines, what is the appropriate advice?",
+        imgBase64: "",
+        options: [
+            "He can drive immediately as long as he takes his medication",
+            "He must be seizure-free for 1 month before driving a commercial vehicle",
+            "He must be seizure-free for 6 months before driving a commercial vehicle",
+            "He must be seizure-free for 10 years or have his commercial license revoked",
+            "He must surrender his license permanently today"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>According to JPJ Malaysia and standard international medical fitness to drive guidelines, commercial drivers (Group 2 licenses - lorries, buses) have extremely strict criteria. An individual with a diagnosis of Epilepsy is generally barred from holding a commercial license unless they have been off medication and entirely seizure-free for 10 years.<br><br><h4>Why the others are wrong:</h4><b>A, B, C:</b> These timeframes (6-12 months) apply only to private car drivers (Group 1 licenses), NOT commercial drivers carrying heavy loads or passengers.<br><b>E:</b> He doesn't necessarily surrender a private car license permanently, but his commercial driving career is indefinitely suspended until strict long-term criteria are met.",
+        ref: "Malaysian Medical Association / JPJ Guidelines on Medical Fitness to Drive."
+    },
+    {
+        topic: "Gynaecology - Abnormal Uterine Bleeding",
+        q: "A 42-year-old woman complains of excessively heavy menstrual bleeding (menorrhagia) for 6 months. She has no dysmenorrhea or intermenstrual bleeding. Pelvic ultrasound reveals a normal-sized uterus with no fibroids or polyps. Her Urine Pregnancy Test is negative. She does not wish to conceive. What is the most effective, evidence-based FIRST-LINE medical treatment?",
+        imgBase64: "",
+        options: [
+            "Oral Iron supplements alone",
+            "Levonorgestrel-Releasing Intrauterine System (Mirena)",
+            "Refer for a Total Abdominal Hysterectomy",
+            "Oral Clomiphene Citrate",
+            "Oral Non-Steroidal Anti-Inflammatory Drugs (NSAIDs) PRN"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>For idiopathic Heavy Menstrual Bleeding (AUB-E) where structural causes (fibroids/polyps) are ruled out, the Levonorgestrel IUS (Mirena) is the most effective first-line medical therapy. It directly thins the endometrial lining, significantly reducing blood loss, and provides contraception.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Iron replaces lost stores but does not stop the primary bleeding.<br><b>C:</b> Hysterectomy is the definitive last resort after all medical therapies fail.<br><b>D:</b> Clomiphene induces ovulation; it does not treat menorrhagia.<br><b>E:</b> NSAIDs and Tranexamic acid are effective non-hormonal options, but the LNG-IUS provides the highest objective reduction in menstrual blood loss.",
+        ref: "Malaysian CPG Management of Heavy Menstrual Bleeding."
+    },
+    {
+        topic: "Urology - Surgical Emergency",
+        q: "A 15-year-old boy presents to the emergency clinic with a sudden onset of severe, agonizing pain in his right testicle that started 2 hours ago while sleeping. He vomited once. Examination reveals a swollen, high-riding right testicle. The cremasteric reflex is completely absent on the right side. What is the most crucial next step?",
+        imgBase64: "",
+        options: [
+            "Order a urine culture and prescribe Oral Ciprofloxacin",
+            "Arrange a Doppler Ultrasound to be done tomorrow morning",
+            "Refer immediately to the surgical/urology team for urgent scrotal exploration",
+            "Provide scrotal elevation, ice packs, and discharge",
+            "Attempt manual detorsion in the clinic"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Sudden severe testicular pain, a high-riding testis, and an absent cremasteric reflex in a teenager is Testicular Torsion until proven otherwise. This is a critical surgical emergency. The testis will undergo irreversible ischemic necrosis within 6 hours. Urgent surgical exploration is the definitive standard of care.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Antibiotics treat Epididymo-orchitis, which typically presents more gradually with fever, UTI symptoms, and a preserved cremasteric reflex.<br><b>B:</b> Waiting for an ultrasound delays surgery and guarantees testicular death.<br><b>D:</b> Ice packs and elevation do not restore blood flow to a twisted spermatic cord.",
+        ref: "iFRACGCP Surgery / Urological Emergencies Guidelines."
+    },
+    {
+        topic: "Respiratory - Sleep Apnea",
+        q: "A 50-year-old obese man (BMI 36) is brought in by his wife because he snores incredibly loudly. She reports that he stops breathing for several seconds during sleep, followed by a loud snort. He complains of waking up with headaches and severe daytime sleepiness, occasionally falling asleep at red traffic lights. What is the gold standard diagnostic investigation?",
+        imgBase64: "",
+        options: [
+            "Overnight Pulse Oximetry",
+            "Spirometry",
+            "Arterial Blood Gas (ABG)",
+            "Polysomnography (Sleep Study)",
+            "Chest X-Ray"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>This is the classic presentation of Obstructive Sleep Apnea (OSA). The triad is loud snoring, witnessed apneas, and daytime somnolence. The gold standard to confirm the diagnosis and calculate the Apnea-Hypopnea Index (AHI) is a formal Polysomnography (Sleep Study).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Pulse oximetry is a cheap screening tool but lacks the EEG, effort band, and airflow data required to formally diagnose and classify OSA.<br><b>B & E:</b> Spirometry and CXR assess lower airway/lung parenchyma, whereas OSA is a structural upper airway collapse issue.",
+        ref: "Malaysian Thoracic Society Guidelines on Obstructive Sleep Apnea."
+    },
+    {
+        topic: "Endocrinology - Diabetic Emergency",
+        q: "A 65-year-old Type 2 Diabetic patient on Insulin is brought to the clinic unresponsive. He missed breakfast but took his morning insulin. He is sweating profusely and pale. A capillary blood glucose (CBG) is 1.8 mmol/L. He is completely unconscious. What is the most appropriate immediate management?",
+        imgBase64: "",
+        options: [
+            "Pour a sugary drink into his mouth",
+            "Administer 50% Intravenous Dextrose or 1mg Intramuscular Glucagon",
+            "Administer subcutaneous fast-acting Insulin",
+            "Perform CPR immediately",
+            "Wait for the ambulance without intervening"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The patient is in a hypoglycemic coma (CBG < 3.9 mmol/L with unconsciousness). In an unconscious patient, oral fluids are strictly contraindicated due to the high risk of fatal aspiration. The life-saving protocol is direct IV Dextrose (50% or 20%) or an IM Glucagon injection to rapidly raise blood glucose.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Pouring fluid into an unconscious patient's mouth will cause aspiration pneumonia.<br><b>C:</b> Giving insulin to a hypoglycemic patient is a lethal error.<br><b>D:</b> He is breathing and has a pulse, he is just comatose from low glucose. CPR is for cardiac arrest.<br><b>E:</b> Brain death can occur if severe hypoglycemia is left untreated while waiting for transport.",
+        ref: "Malaysian CPG Management of Type 2 Diabetes Mellitus."
+    },
+    {
+        topic: "Ophthalmology - Diabetic Screening",
+        q: "A 45-year-old man has just been diagnosed with Type 2 Diabetes Mellitus today. His fasting blood glucose is 8.5 mmol/L and HbA1c is 7.2%. He currently has no visual complaints. According to guidelines, when should his first formal Diabetic Retinopathy eye screening (Fundus photo) be performed?",
+        imgBase64: "",
+        options: [
+            "In 5 years",
+            "At the time of diagnosis (as soon as possible)",
+            "When he starts complaining of blurred vision",
+            "Only when his HbA1c exceeds 8.0%",
+            "In 1 year"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>Type 2 Diabetes has a long asymptomatic pre-clinical phase. By the time a patient is formally diagnosed, they may have had the disease for 5-7 years, and microvascular complications (like retinopathy) may already be present. Therefore, screening for diabetic retinopathy MUST occur immediately at the time of diagnosis.<br><br><h4>Why the others are wrong:</h4><b>A:</b> The '5-year rule' applies to Type 1 Diabetics, because the exact onset of Type 1 is known acutely, and it takes time for retinopathy to develop. Type 2 onset is insidious.<br><b>C:</b> Waiting for visual symptoms means the disease has progressed to advanced macular edema or proliferative retinopathy, often too late for simple laser treatment.",
+        ref: "Malaysian CPG Management of Diabetic Retinopathy."
+    },
+    {
+        topic: "Haematology - Deep Vein Thrombosis",
+        q: "A 55-year-old woman complains of a swollen, painful right calf for 3 days. She recently returned from a 14-hour flight from London. Examination reveals a unilateral swollen right calf, 4cm larger than the left, which is warm and tender. Her Modified Wells Score is 4 (High Probability). What is the gold standard INITIAL imaging investigation?",
+        imgBase64: "",
+        options: [
+            "D-Dimer blood test",
+            "Compression Duplex Ultrasound of the right leg",
+            "CT Pulmonary Angiogram (CTPA)",
+            "Magnetic Resonance Venography (MRV)",
+            "Standard X-Ray of the right leg"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient has a highly probable Deep Vein Thrombosis (DVT) based on clinical history (long-haul flight/stasis) and examination. The gold standard, non-invasive, initial imaging modality to visualize a clot in the deep veins is a Compression Duplex Ultrasound.<br><br><h4>Why the others are wrong:</h4><b>A:</b> D-Dimer is a screening test used to RULE OUT DVT in 'low probability' patients. In a high probability patient, it is useless because imaging is required regardless of the result.<br><b>C:</b> CTPA is the gold standard for Pulmonary Embolism (PE), not for leg DVT.<br><b>D:</b> MRV is too expensive and slow for acute initial diagnosis.<br><b>E:</b> X-rays image bone, not blood clots.",
+        ref: "Malaysian Guidelines on Prevention and Treatment of VTE."
+    },
+    {
+        topic: "Geriatrics - Urinary Incontinence",
+        q: "A 60-year-old multiparous woman complains of leaking small amounts of urine whenever she coughs, sneezes, or laughs loudly. She has no dysuria, hematuria, or sudden overwhelming urge to urinate. Her urine dipstick is normal. What is the most appropriate first-line management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Tolterodine (Antimuscarinic)",
+            "Refer for an urgent Cystoscopy",
+            "Instruct her on Pelvic Floor Muscle Training (Kegel exercises)",
+            "Insert an indwelling Foley catheter",
+            "Prescribe a course of antibiotics"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Leaking urine with increased intra-abdominal pressure (coughing/sneezing) without a preceding urge is the hallmark of Stress Urinary Incontinence. It is caused by pelvic floor weakness (often due to multiple childbirths/aging). The first-line, non-invasive, highly effective therapy is Pelvic Floor Muscle Training (Kegel exercises) for at least 3 months.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Antimuscarinics (Tolterodine) treat Urge Incontinence (overactive bladder spasms), not stress incontinence.<br><b>B:</b> Cystoscopy is for suspected bladder cancer (painless hematuria).<br><b>E:</b> Her dipstick is normal, ruling out a UTI.",
+        ref: "iFRACGCP Geriatrics / Urogynaecology Guidelines."
+    },
+    {
+        topic: "Infectious Disease - Rabies Post-Exposure",
+        q: "A 25-year-old man presents to a clinic in rural Sarawak. He was bitten on the hand by an unprovoked stray dog 1 hour ago. The dog ran away. The bite broke the skin and is bleeding (Category III exposure). After washing the wound with soap and water for 15 minutes, what is the absolute mandatory pharmacological protocol?",
+        imgBase64: "",
+        options: [
+            "Administer Tetanus Toxoid and oral Augmentin only",
+            "Suture the wound tightly and observe",
+            "Administer Rabies Vaccine alone",
+            "Administer Rabies Immunoglobulin (RIG) infiltrated into the wound AND the Rabies Vaccine",
+            "Wait 10 days to see if the patient develops rabies symptoms"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>Sarawak is a rabies-endemic area. An unprovoked bite breaking the skin (Category III) from a stray dog is a massive rabies risk. The WHO protocol mandates immediate passive immunity (Rabies Immunoglobulin infiltrated directly into and around the wound to neutralize the virus locally) PLUS active immunity (Rabies Vaccine regimen starting on Day 0).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Tetanus and antibiotics are needed, but ignoring rabies PEP in Sarawak is a fatal error.<br><b>B:</b> Suturing an animal bite traps bacteria and the rabies virus, increasing infection risk.<br><b>C:</b> Vaccine alone is insufficient for Category III bites; RIG is required to bridge the gap before the body makes its own antibodies.",
+        ref: "Ministry of Health Malaysia: Guidelines on Rabies Management."
+    },
+    {
+        topic: "Surgery - Acute Abdomen",
+        q: "A 20-year-old man complains of central abdominal pain that started yesterday. Over the last 6 hours, the pain has migrated and localized sharply to the Right Iliac Fossa (RIF). He has vomited twice and has no appetite. Examination reveals rebound tenderness at McBurney's point and a positive Rovsing's sign. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Omeprazole and Buscopan",
+            "Refer urgently to the surgical team for suspected Acute Appendicitis",
+            "Order a Urea Breath Test",
+            "Perform a Digital Rectal Examination and discharge",
+            "Prescribe a laxative for constipation"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The classic migratory pain from the periumbilical region to the Right Iliac Fossa, accompanied by anorexia, vomiting, and focal peritonitis (rebound tenderness/Rovsing's sign), is the textbook presentation of Acute Appendicitis. This is a surgical emergency requiring urgent referral for appendectomy to prevent perforation.<br><br><h4>Why the others are wrong:</h4><b>A:</b> PPIs treat gastritis, not surgical peritonitis.<br><b>C:</b> UBT is for chronic H. pylori, not an acute surgical abdomen.<br><b>E:</b> Giving a laxative to a patient with acute appendicitis can precipitate bowel rupture.",
+        ref: "Advanced Trauma Life Support / Basic Surgical Skills Guidelines."
+    },
+    {
+        topic: "Rheumatology - SLE Screening",
+        q: "A 24-year-old female complains of joint pains in her hands and extreme fatigue. She recently developed a red rash across her cheeks and nose bridge, which worsens after sun exposure. Her urine dipstick shows 2+ Protein. Which is the most sensitive initial screening blood test to support your suspected diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2UgUGxhY2Vob2xkZXI6IFNMRSBNYWxhciBSYXNoXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Rheumatoid Factor (RF)",
+            "Anti-Nuclear Antibody (ANA)",
+            "Anti-dsDNA",
+            "Erythrocyte Sedimentation Rate (ESR)",
+            "Serum Uric Acid"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The clinical triad of polyarthritis, a photosensitive malar (butterfly) rash, and lupus nephritis (proteinuria) in a young woman is highly diagnostic of Systemic Lupus Erythematosus (SLE). The best INITIAL screening test is the Anti-Nuclear Antibody (ANA), which is highly sensitive (>95% of SLE patients are ANA positive).<br><br><h4>Why the others are wrong:</h4><b>C:</b> Anti-dsDNA is highly *specific* for SLE and tracks disease activity, but ANA is the initial *screening* test.<br><b>A:</b> RF is for Rheumatoid Arthritis.<br><b>D:</b> ESR is a non-specific marker of inflammation and cannot diagnose SLE.<br><b>E:</b> Uric acid is for Gout.",
+        ref: "Malaysian CPG Management of Systemic Lupus Erythematosus."
+    },
+    {
+        topic: "Orthopaedics - Developmental Dysplasia",
+        q: "A mother brings her 6-week-old female infant for a routine checkup. She was born via breech delivery. On examination, you notice asymmetrical gluteal skin folds. When you flex and abduct the infant's hips, you feel a distinct 'clunk' on the left side (Positive Ortolani maneuver). What is the most appropriate diagnostic imaging?",
+        imgBase64: "",
+        options: [
+            "Plain X-Ray of the Pelvis immediately",
+            "Ultrasound of the Hips",
+            "CT Scan of the Pelvis",
+            "MRI of the Spine",
+            "No imaging is required, reassure the mother"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>A positive Ortolani test (a clunk as a dislocated femoral head reduces into the acetabulum) in an infant with risk factors (female, breech) strongly indicates Developmental Dysplasia of the Hip (DDH). In infants under 4-6 months, the femoral head is predominantly cartilage, so Ultrasound is the gold standard imaging modality.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Plain X-rays are not useful until the femoral head ossification center appears around 4-6 months of age.<br><b>C & D:</b> CT/MRI require sedation, carry radiation (CT), and are massive over-investigations for initial DDH screening.<br><b>E:</b> Ignoring a positive Ortolani test leads to permanent leg length discrepancy and early severe osteoarthritis.",
+        ref: "Malaysian Paediatric Protocol (MPP) / Primary Care Orthopaedics."
+    },
+    {
+        topic: "Endocrinology - Osteoporosis Calcium Basics",
+        q: "A 65-year-old postmenopausal woman asks you how much elemental calcium she needs daily to protect her bones. She currently drinks one glass of milk a day. According to guidelines, what is the recommended total daily intake of elemental calcium for a woman her age?",
+        imgBase64: "",
+        options: [
+            "400 mg daily",
+            "800 mg daily",
+            "1000 - 1200 mg daily",
+            "2000 mg daily",
+            "3000 mg daily"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>According to the Malaysian CPG on Osteoporosis and international endocrine guidelines, the recommended daily allowance (RDA) of elemental calcium for postmenopausal women (>50 years old) to prevent bone loss is 1000 to 1200 mg daily (combined from diet and supplements).<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> 400-800 mg is insufficient to maintain positive calcium balance in estrogen-depleted postmenopausal women.<br><b>D & E:</b> Doses > 2000 mg daily increase the risk of renal calculi (kidney stones) and cardiovascular calcification without providing additional bone benefit.",
+        ref: "Malaysian CPG Management of Osteoporosis."
+    }
+];
+
+let currentIdx = 0;
+let answered = new Array(quizData.length).fill(null);
+let score = { correct: 0, wrong: 0 };
+
+function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentIdx];
+    
+    let imgHtml = q.imgBase64 ? `<div class="img-box"><img src="${q.imgBase64}" alt="Clinical Reference Image"></div>` : '';
+    
+    let optionsHtml = q.options.map((opt, i) => {
+        let extraClass = "";
+        if (answered[currentIdx] !== null) {
+            if (i === q.correct) extraClass = "correct";
+            else if (answered[currentIdx] === i) extraClass = "wrong";
+        }
+        return `<li class="option ${extraClass}" onclick="handleAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="topic-badge">${q.topic}</div>
+        <div class="question-text">${currentIdx + 101}. ${q.q}</div>
+        ${imgHtml}
+        <ul class="options">${optionsHtml}</ul>
+        <div id="justification-box" class="justification" style="display: ${answered[currentIdx] !== null ? 'block' : 'none'}">
+            ${q.justification}
+            <span class="ref">Source: ${q.ref}</span>
+        </div>
+    `;
+    
+    document.getElementById('current-q').innerText = currentIdx + 101;
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    
+    // Change button text on the absolute last question
+    document.getElementById('next-btn').innerText = currentIdx === quizData.length - 1 ? "Finish Bonus Part 6!" : "Next Question";
+}
+
+window.handleAnswer = function(selectedIdx) {
+    if (answered[currentIdx] !== null) return;
+    
+    answered[currentIdx] = selectedIdx;
+    if (selectedIdx === quizData[currentIdx].correct) {
+        score.correct++;
+    } else {
+        score.wrong++;
+    }
+    
+    document.getElementById('correct-count').innerText = score.correct;
+    document.getElementById('wrong-count').innerText = score.wrong;
+    renderQuestion(); 
+};
+
+window.changeQuestion = function(step) {
+    if (step === 1 && currentIdx === quizData.length - 1) {
+        
+        // --- ADDED LOCAL STORAGE LINKING ---
+        let partID = "part6"; // 
+        
+        let savedProgress = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+        savedProgress[partID] = { 
+            correct: score.correct, 
+            wrong: score.wrong, 
+            total: quizData.length, 
+            completed: true 
+        };
+        localStorage.setItem('gcfm_progress', JSON.stringify(savedProgress));
+        // ------------------------------------
+
+        document.getElementById('quiz-container').innerHTML = `
+            <div style="text-align:center;">
+                <h2 style="color: #27ae60; font-size: 2em;">Module Complete!</h2>
+                <p style="font-size: 1.2em;">Your score has been saved to the dashboard.</p>
+                <p style="font-weight: bold; font-size: 1.5em; background: #ecf0f1; padding: 20px; border-radius: 10px;">
+                    Score: ${score.correct} out of ${quizData.length} (${Math.round(score.correct/quizData.length*100)}%)
+                </p>
+                <br>
+                <a href="index.html" style="display:inline-block; padding: 12px 24px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">Return to Dashboard</a>
+                <button onclick="location.reload()" style="background: #3498db;">Restart Module</button>
+            </div>`;
+        document.getElementById('nav-controls').style.display = 'none';
+        return;
+    }
+    currentIdx += step;
+    renderQuestion();
+};
+
+renderQuestion();
+</script>
+
+</body>
+</html>

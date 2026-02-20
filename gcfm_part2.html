@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery - Part 2 (Q21-40)</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #e67e22; --success: #27ae60; --danger: #c0392b; --bg: #fdfefe; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--secondary); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-between; font-size: 1.1em; margin-bottom: 20px; font-weight: bold; background: #fdf2e9; padding: 15px; border-radius: 8px; }
+        .topic-badge { background: var(--secondary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; text-transform: uppercase; display: inline-block; margin-bottom: 15px; font-weight: bold; }
+        .question-text { font-size: 1.2em; margin-bottom: 20px; font-weight: 600; color: var(--primary); }
+        .img-box { text-align: center; margin-bottom: 20px; }
+        .img-box img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #bdc3c7; background: #eee; }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option { background: #f8f9fa; border: 2px solid #bdc3c7; padding: 15px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.05em; }
+        .option:hover { background: #fae5d3; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .justification { margin-top: 25px; padding: 20px; background: #fef9e7; border-left: 6px solid var(--secondary); display: none; border-radius: 4px; }
+        .justification h4 { margin-top: 0; color: var(--secondary); }
+        .ref { display: block; margin-top: 15px; font-weight: bold; font-style: italic; color: #7f8c8d; font-size: 0.9em; }
+        .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; background: var(--secondary); color: white; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #d35400; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GCFM Exam Simulator (Part 2/5)</h1>
+    
+    <div class="stats" id="score-board">
+        <span>Question: <span id="current-q">21</span>/40</span>
+        <span style="color: var(--success);">Correct: <span id="correct-count">0</span></span>
+        <span style="color: var(--danger);">Wrong: <span id="wrong-count">0</span></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-controls">
+        <button id="prev-btn" onclick="changeQuestion(-1)" disabled>Previous</button>
+        <button id="next-btn" onclick="changeQuestion(1)">Next Question</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        topic: "Neurology / Infectious Disease",
+        q: "A 37-year-old lady presents with sudden onset right-sided body weakness. Preceded by fever, headache, and myalgia 1 week ago. She has underlying SLE on Azathioprine and Hydroxychloroquine. Examination: T 38.0°C. Right upper and lower limb power 4/5, hyperreflexia, upgoing plantar. CT Brain shows a ring-enhancing lesion over the left basal ganglia. What is the most appropriate investigation?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bQ1QgQnJhaW46IFJpbmcgRW5oYW5jaW5nIExlc2lvbl08L3RleHQ+PC9zdmc+",
+        options: [
+            "HIV ELISA Test",
+            "Toxoplasma IgG and IgM",
+            "Serum Cryptococcal Antigen",
+            "VDRL for Neurosyphilis",
+            "Blood Culture and Sensitivity"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient is severely immunocompromised due to SLE and Azathioprine. The classic presentation of a ring-enhancing lesion in the basal ganglia in an immunocompromised host strongly points to Cerebral Toxoplasmosis. Toxoplasma serology (IgG/IgM) is the immediate next step to support the diagnosis.<br><br><h4>Why the others are wrong:</h4><b>A:</b> While HIV patients get Toxoplasmosis, she already has a known cause of immunosuppression (Azathioprine for SLE). Diagnosing the immediate brain lesion takes precedence.<br><b>C:</b> Cryptococcus typically causes diffuse meningoencephalitis with 'soap bubble' lesions or hydrocephalus, less commonly a focal ring-enhancing abscess.<br><b>D:</b> Neurosyphilis rarely presents as a single ring-enhancing abscess in the basal ganglia.<br><b>E:</b> Blood cultures are useful for bacterial sepsis but do not diagnose Toxoplasma, a parasite.",
+        ref: "Malaysian CPG Management of Systemic Lupus Erythematosus / Infectious Diseases Society."
+    },
+    {
+        topic: "Orthopaedics - Sports Injury",
+        q: "A 14-year-old school footballer complains of right knee pain for 3 months. It worsens while running and playing football. No history of trauma or fever. Examination reveals normal gait, afebrile, and a tender, prominent tibial tubercle with no erythema. X-ray shows multiple irregular bony pieces and fragmentations over the apophysis at the tibial tubercle. What is the next appropriate management?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bWC1yYXk6IFRpYmlhbCBUdWJlcmNsZSBGcmFnbWVudGF0aW9uXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Strict non-weight-bearing with crutches",
+            "Analgesics and activity modification",
+            "Refer urgently to orthopaedic surgeon",
+            "Apply a long leg plaster cast",
+            "Administer intra-articular steroid injection"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The clinical and radiological findings are pathognomonic for Osgood-Schlatter disease (traction apophysitis of the tibial tubercle). It is a benign, self-limiting condition in growing adolescents. The standard of care is conservative: rest/activity modification, ice, and oral analgesics (NSAIDs).<br><br><h4>Why the others are wrong:</h4><b>A & D:</b> Immobilization (casting or strict non-weight bearing) is overly aggressive, causes muscle atrophy, and is not recommended.<br><b>C:</b> Orthopaedic referral is only for atypical cases or avulsion fractures, not classic Osgood-Schlatter.<br><b>E:</b> Steroid injections in adolescents over growth plates/tendons are strictly contraindicated due to the risk of tendon rupture.",
+        ref: "Malaysian Primary Care Orthopaedic Guidelines."
+    },
+    {
+        topic: "Haematology / Oncology",
+        q: "A 28-year-old male complains of weight loss and tiredness for 1 month. He has intermittent low-grade fever, especially at night. He is previously healthy. Examination reveals a pink conjunctiva, T 37.5°C. A firm, non-tender, 3cm right supraclavicular lymph node is palpable. What is the most appropriate next step in investigation?",
+        imgBase64: "",
+        options: [
+            "Fine needle aspiration (FNA) of the lymph node",
+            "Excision biopsy of the lymph node",
+            "Reassure and review in 1 month",
+            "Start a trial of oral antibiotics for 2 weeks",
+            "Mantoux test (Tuberculin Skin Test)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>A painless supraclavicular lymph node accompanied by 'B symptoms' (night sweats, weight loss, fever) in a young adult is highly suspicious for Lymphoma (e.g., Hodgkin's) or Tuberculosis. The gold standard for diagnosing lymphoma is an intact Excision Biopsy to evaluate the lymph node architecture.<br><br><h4>Why the others are wrong:</h4><b>A:</b> FNA disrupts tissue architecture and is often inadequate to formally diagnose and subtype lymphomas. Excision is preferred.<br><b>C:</b> Reassurance is negligent; a supraclavicular node is never 'normal' and must be investigated.<br><b>D:</b> Antibiotics delay diagnosis; painless, firm nodes with B-symptoms are unlikely to be simple bacterial adenitis.<br><b>E:</b> Mantoux test might be positive in TB, but it does not rule out lymphoma. Biopsy is required for definitive tissue diagnosis.",
+        ref: "Malaysian CPG Management of Lymphoma / General Surgery Guidelines."
+    },
+    {
+        topic: "Paediatrics - Exanthem",
+        q: "A 6-year-old girl presents with a high-grade fever for 7 days. She has a sore throat and a polymorphous rash over her trunk. Examination reveals bilateral injected conjunctiva with no exudate, cracked and red lips, and a strawberry tongue. Lab results show marked thrombocytosis. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Dengue Fever",
+            "Kawasaki Disease",
+            "Scarlet Fever",
+            "Measles",
+            "Rubella"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This is the classic presentation of Kawasaki Disease: Fever ? 5 days PLUS at least 4 of the CREAM criteria (Conjunctivitis non-exudative, Rash, Erythema/edema of extremities, Adenopathy, Mucosal involvement like strawberry tongue/cracked lips). Thrombocytosis is a classic lab finding in the subacute phase.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Dengue causes thrombocytopenia, not thrombocytosis, and rarely presents with strawberry tongue.<br><b>C:</b> Scarlet fever has a strawberry tongue and rash (sandpaper-like), but no bilateral non-exudative conjunctivitis or thrombocytosis.<br><b>D & E:</b> Measles has Koplik spots and a distinct viral prodrome; conjunctivitis is typically exudative/runny. Thrombocytosis is not characteristic.",
+        ref: "Malaysian Paediatric Protocol (MPP) 4th Edition - Kawasaki Disease."
+    },
+    {
+        topic: "Respiratory - Asthma Step-up",
+        q: "A 24-year-old male with asthma is on MDI Salbutamol PRN and MDI Budesonide 200mcg BD. He had an acute exacerbation today and was given MDI Salbutamol via spacer in the clinic. He has improved: SpO2 97%, PEFR 86%, minimal rhonchi. You prescribe a short course of oral prednisolone. What is the most appropriate long-term management adjustment?",
+        imgBase64: "",
+        options: [
+            "Continue MDI Budesonide 200mcg BD and MDI Salbutamol PRN",
+            "Increase MDI Budesonide to 400mcg BD",
+            "Add Oral Montelukast 10mg ON",
+            "Stop Budesonide and start Oral Theophylline",
+            "Refer immediately to a Respiratory Physician"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>According to asthma guidelines, any patient who suffers an exacerbation requiring oral corticosteroids or urgent care is deemed to have 'uncontrolled' asthma. Their maintenance controller therapy (Inhaled Corticosteroid) must be stepped up. Doubling the ICS dose (Budesonide 400mcg BD) or switching to a combination ICS/LABA is the correct step-up approach.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Continuing the same dose guarantees he will exacerbate again, as his asthma was uncontrolled on this baseline.<br><b>C:</b> Montelukast is an add-on therapy but stepping up the ICS or adding LABA is preferred first-line for adults.<br><b>D:</b> Theophylline is obsolete as a primary step-up due to toxicity and lower efficacy compared to ICS.<br><b>E:</b> A single exacerbation managed in primary care does not mandate specialist referral unless it is life-threatening or refractory.",
+        ref: "Malaysian CPG Management of Asthma in Adults / GINA Guidelines."
+    },
+    {
+        topic: "Emergency - Anaphylaxis",
+        q: "A 30-year-old man was stung by a jellyfish at the beach. He complains of severe chest tightness and shortness of breath. GCS 15/15, BP 160/100, PR 120, SpO2 90% on room air, RR 30. Lungs reveal bilateral widespread reduced air entry and wheezing. What is the most important immediate management?",
+        imgBase64: "",
+        options: [
+            "Intramuscular Adrenaline (Epinephrine)",
+            "Intravenous Hydrocortisone",
+            "Intravenous Normal Saline rapid infusion",
+            "High flow oxygen via non-rebreather mask",
+            "Prepare for immediate endotracheal intubation"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>This patient is experiencing Anaphylaxis (severe allergic reaction triggering intense bronchospasm resulting in reduced air entry, hypoxia, and tachycardia). Intramuscular Adrenaline (0.5mg of 1:1000 in the anterolateral thigh) is the life-saving, absolute first-line treatment to reverse bronchospasm and prevent cardiovascular collapse.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Corticosteroids take 4-6 hours to work; they will not save him in the acute phase.<br><b>C:</b> IV fluids are given for hypotension, but his BP is currently elevated (likely due to distress/hypoxia). Adrenaline is still the priority.<br><b>D:</b> Oxygen must be given, but it will not penetrate severely constricted airways without Adrenaline acting as a bronchodilator.<br><b>E:</b> Intubation is a last resort if medical therapy fails; IM Adrenaline often reverses the crisis rapidly.",
+        ref: "Malaysian CPG Management of Anaphylaxis."
+    },
+    {
+        topic: "ENT - Paediatrics",
+        q: "A 5-year-old child presents with a 3-day history of right ear pain, high fever (38.5°C), and irritability. Today, the mother noticed yellowish discharge from the right ear. He has no known allergies and immunizations are up-to-date. What is the most appropriate primary pharmacological management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Amoxicillin",
+            "Prescribe Topical Ciprofloxacin ear drops",
+            "Prescribe Oral Antihistamines",
+            "Reassurance and Paracetamol only",
+            "Refer immediately for myringotomy"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>The child has Acute Otitis Media (AOM) with tympanic membrane rupture (indicated by sudden yellowish discharge). First-line antibiotic therapy for AOM in Malaysia is high-dose Oral Amoxicillin to cover Streptococcus pneumoniae and Haemophilus influenzae.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Topical drops alone are insufficient for acute middle ear infections with systemic symptoms (fever) in children.<br><b>C:</b> Antihistamines have no proven benefit in AOM and do not treat the bacterial infection.<br><b>D:</b> While 'watchful waiting' is an option for mild AOM, the presence of tympanic perforation with purulent discharge mandates oral antibiotics.<br><b>E:</b> Myringotomy is reserved for chronic effusions or severe refractory cases, not first-line presentation.",
+        ref: "National Antibiotic Guidelines (NAG) Malaysia 2024 - Acute Otitis Media."
+    },
+    {
+        topic: "Cardiology - Hypertension Target",
+        q: "A 50-year-old man comes for hypertension follow-up. He exercises regularly and is compliant with Perindopril. His home blood pressure monitoring (HBPM) diary shows consistent readings around 138/87 mmHg. Today in the clinic, his BP is 150/90 mmHg. BMI is 22.5. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Reassure him as this is a 'white coat' effect",
+            "Add another antihypertensive medication",
+            "Advise a strict low-salt diet and review in 6 months",
+            "Order a 24-hour ambulatory BP monitor (ABPM)",
+            "Switch Perindopril to Amlodipine"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>While he has a 'white coat' element (clinic BP > home BP), his Home BP is 138/87. According to Malaysian CPG, the target for HBPM is strictly < 135/85 mmHg. Since his home readings are consistently above target despite maximum lifestyle modifications (BMI 22.5, regular exercise), his hypertension is genuinely uncontrolled, and a second agent (e.g., Amlodipine or Thiazide) must be added.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Reassurance is wrong because his baseline home BP is above the <135/85 threshold.<br><b>C:</b> He is already employing lifestyle measures; delaying pharmacotherapy risks target organ damage.<br><b>D:</b> ABPM is not necessary as his HBPM already confirms uncontrolled BP.<br><b>E:</b> Adding a second drug from a different class is superior to swapping drugs when the current drug is well-tolerated but insufficient.",
+        ref: "Malaysian CPG Management of Hypertension 2023."
+    },
+    {
+        topic: "Oncology - SVCO",
+        q: "A 75-year-old lady recently had her malignant thymoma resected. She presents with a 2-week history of worsening neck and facial swelling. Examination reveals plethora and prominent venous engorgement over her neck and anterior chest wall. What is the gold standard investigation to confirm her diagnosis?",
+        imgBase64: "",
+        options: [
+            "Contrast-enhanced CT Thorax",
+            "Magnetic Resonance Imaging (MRI) of the neck",
+            "Standard Chest X-Ray",
+            "Ultrasound Doppler of the neck veins",
+            "Invasive Venography"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>This patient has Superior Vena Cava Obstruction (SVCO) secondary to local recurrence of her malignant thymoma. Contrast-enhanced CT Thorax is the gold standard investigation as it pinpoints the exact site of obstruction, evaluates the extent of the tumor, and guides stenting or radiotherapy.<br><br><h4>Why the others are wrong:</h4><b>B:</b> MRI is slower, more expensive, and less commonly used for acute thoracic vessel mapping than CT.<br><b>C:</b> CXR may show a widened mediastinum but cannot confirm vascular obstruction.<br><b>D:</b> Ultrasound can confirm jugular vein thrombosis but cannot visualize the intrathoracic SVC where the primary obstruction lies.<br><b>E:</b> Venography is invasive and largely replaced by CT venography.",
+        ref: "iFRACGCP Oncology & Palliative Care / Malaysian Thoracic Oncology Guidelines."
+    },
+    {
+        topic: "Psychiatry - Psychosis",
+        q: "A 58-year-old lady presents with a firm belief that her husband has been having an affair with her sister for the past 1 year. She claims a TV reporter she watched verified her story. She also reports hearing someone call her name briefly while she falls asleep. She does not drink alcohol. Examination reveals a completely normal, well-preserved affect and normal speech. She maintains her job. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Bipolar Disorder",
+            "Paranoid Schizophrenia",
+            "Major Depressive Disorder with psychotic features",
+            "Delusional Disorder",
+            "Schizoaffective Disorder"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>This is Delusional Disorder (Jealous/Persecutory type). The key feature is the presence of fixed delusions for >1 month in a patient who otherwise has a completely normal affect, normal speech, and preserved daily functioning. The hallucination of hearing her name while falling asleep is a 'hypnagogic' hallucination, which is a normal phenomenon and does not count towards schizophrenia.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Schizophrenia requires at least 2 major symptoms (delusions, prominent auditory hallucinations, disorganized speech, flat affect) and significant functional decline.<br><b>A & C & E:</b> There is no evidence of mania or severe depression mentioned to warrant a mood disorder diagnosis.",
+        ref: "DSM-5 Diagnostic Criteria / Malaysian Psychiatry Guidelines."
+    },
+    {
+        topic: "Emergency - Trauma ATLS",
+        q: "A young man is brought to your primary care clinic after being involved in a hit-and-run accident. He is groaning, confused, and his clothes are heavily covered in blood. As the first responding doctor, what is your most important INITIAL management?",
+        imgBase64: "",
+        options: [
+            "Check his blood pressure and pulse rate",
+            "Perform a head tilt and chin lift to open the airway",
+            "Perform a rapid head-to-toe examination",
+            "Apply pressure to visible bleeding wounds",
+            "Start an IV drip with Normal Saline immediately"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>According to Advanced Trauma Life Support (ATLS) principles, the absolute first step in any trauma patient is assessing and securing the Airway (with cervical spine protection). A head tilt-chin lift (or jaw thrust if C-spine injury is suspected) ensures he does not die of hypoxia from an obstructed airway before you can address his bleeding.<br><br><h4>Why the others are wrong:</h4><b>A, D, E:</b> Circulation (BP, IV fluids, bleeding control) is step 'C' in the ABCDE approach. Airway ('A') and Breathing ('B') must always come first.<br><b>C:</b> Head-to-toe is the Secondary Survey, performed only after ABCs are stabilized.",
+        ref: "Advanced Trauma Life Support (ATLS) 10th Edition Guidelines."
+    },
+    {
+        topic: "Orthopaedics - Ankle Injury",
+        q: "A 24-year-old receptionist accidentally inverted her right ankle while walking in high heels. She is able to walk into the clinic but is in pain. Examination: vitals stable, ecchymosis and tenderness present strictly over the lateral ligament aspect. She has no bony tenderness over the medial or lateral malleoli. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Order an urgent X-ray of the right ankle",
+            "Refer to Orthopaedic clinic",
+            "Arrange an MRI of the ankle",
+            "Advise R.I.C.E therapy and oral analgesics",
+            "Apply a half-cast Plaster of Paris"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>Based on the Ottawa Ankle Rules, an X-ray is only required if there is bony tenderness over the posterior edge of the malleoli OR an inability to bear weight for 4 steps. Since she can walk and has isolated ligamentous tenderness, a fracture is highly unlikely. Standard treatment for a lateral ankle sprain is Rest, Ice, Compression, Elevation (R.I.C.E) and NSAIDs.<br><br><h4>Why the others are wrong:</h4><b>A:</b> X-ray is contraindicated by negative Ottawa Rules, saving radiation exposure.<br><b>B & C:</b> Specialist referral and MRI are reserved for chronic instability or suspected tendon ruptures failing conservative therapy.<br><b>E:</b> Casting restricts necessary early mobilization and delays healing in simple sprains.",
+        ref: "Malaysian Primary Care Orthopaedic Guidelines / Ottawa Ankle Rules."
+    },
+    {
+        topic: "Respiratory - COPD Complication",
+        q: "A 70-year-old man presents with a runny nose and worsening productive cough for 10 days. He complains of increasing tiredness affecting his chores. He smokes 20 cigarettes a day since age 40. Examination: T 37.2°C, BP 125/75, RR 26. He has a barrel chest, scattered rhonchi, and bibasal crepitations. What is the most important initial investigation?",
+        imgBase64: "",
+        options: [
+            "Full Blood Count (FBC)",
+            "Chest X-Ray (CXR)",
+            "Lung Function Test (Spirometry)",
+            "Liver Function Test (LFT)",
+            "Sputum Culture and Sensitivity"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This older heavy smoker has a background of COPD (barrel chest) and presents with an acute exacerbation (worsening cough, RR 26) and crepitations. A Chest X-Ray is mandatory to rule out superimposed pneumonia, pneumothorax, or an underlying lung malignancy, which are common and fatal triggers for COPD exacerbations.<br><br><h4>Why the others are wrong:</h4><b>A & E:</b> FBC and sputum C&S are helpful adjuncts but will not rapidly identify life-threatening structural issues like consolidation or pneumothorax.<br><b>C:</b> Spirometry is contraindicated during an acute exacerbation as it is inaccurate and can worsen bronchospasm.",
+        ref: "Malaysian CPG Management of COPD 2021."
+    },
+    {
+        topic: "Respiratory - Asthma Assessment",
+        q: "A 30-year-old male comes for asthma follow-up. He has no daytime or nocturnal symptoms at rest. However, he started jogging 1 month ago and notices wheezing during the run, which is completely relieved by his MDI Salbutamol. His last severe exacerbation was 1 year ago. Lungs are clear. PEFR is >80% predicted. Which is the most appropriate tool to assess his current status?",
+        imgBase64: "",
+        options: [
+            "Spirometry",
+            "Bronchodilator reversibility testing",
+            "Asthma Control Test (ACT)",
+            "Self-monitor PEFR for 2 weeks",
+            "Exercise challenge test"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>For a known asthmatic on follow-up, the Asthma Control Test (ACT) is the most validated, practical tool to objectively quantify symptom control over the past 4 weeks. His exercise-induced symptoms indicate his asthma may be 'partly controlled', and the ACT score will formalize this to guide step-up therapy (like adding ICS).<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Reversibility testing is for initial diagnosis, not routine monitoring of a known patient with normal resting PEFR.<br><b>D:</b> PEFR diaries are tedious and less compliant than a simple 5-question ACT in the clinic.<br><b>E:</b> Exercise challenge is an expensive diagnostic test, unnecessary here as his clinical history already confirms exercise-induced bronchospasm.",
+        ref: "Malaysian CPG Management of Asthma / GINA Guidelines."
+    },
+    {
+        topic: "Respiratory - Acute Exacerbation of COPD",
+        q: "A 70-year-old man complains of increasing shortness of breath and productive cough for 3 weeks. No fever or weight loss. He has known COPD and uses MDI Berodual 2 puffs BD. Examination: alert, speaking in short words, T 37.5°C, BP 110/80, HR 100, RR 24, SpO2 88% on room air. Lungs have generalized severe rhonchi. What is the most critical immediate investigation to guide therapy?",
+        imgBase64: "",
+        options: [
+            "Sputum Culture and Sensitivity",
+            "Electrocardiogram (ECG)",
+            "Full Blood Count",
+            "Arterial Blood Gas (ABG)",
+            "Serum Electrolytes"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>This patient has a severe COPD exacerbation with profound hypoxia (SpO2 88%). An Arterial Blood Gas (ABG) is critical to determine if he has Type 2 Respiratory Failure (hypercapnia/CO2 retention) and acidosis. This directly dictates whether he needs immediate Non-Invasive Ventilation (BiPAP) and guides exact target oxygen therapy (88-92%).<br><br><h4>Why the others are wrong:</h4><b>A, B, C, E:</b> While an ECG and FBC are routine workups, they do not dictate immediate life-saving respiratory support parameters the way an ABG does in a severely hypoxic COPD patient.",
+        ref: "Malaysian CPG Management of COPD 2021 / GOLD Guidelines."
+    },
+    {
+        topic: "Infectious Disease - Severe Pneumonia",
+        q: "A 65-year-old male presents with increasing shortness of breath, fever, and cough for 1 week. He was discharged from the hospital 2 weeks ago for uncontrolled DM. Examination: T 39.0°C, BP 100/60, HR 110, RR 24, SpO2 95%. Lungs: reduced air entry with crepitations. RBS 11.0 mmol/L. CXR shows left lower lobe consolidation. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Prescribe oral Augmentin and review in 3 days",
+            "Prescribe oral Azithromycin and discharge",
+            "Admit to hospital for IV antibiotics",
+            "Refer for chest physiotherapy",
+            "Administer nebulized Salbutamol and discharge"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient has severe pneumonia with a CRB-65 score of at least 2 (Age >65, Low BP 100/60). Furthermore, his recent hospitalization (2 weeks ago) puts him at high risk for Healthcare-Associated Pneumonia (HCAP) involving resistant organisms like MRSA or Pseudomonas. Immediate hospital admission for broad-spectrum IV antibiotics is mandatory.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Oral antibiotics in the outpatient setting are totally inadequate for severe, potentially resistant pneumonia in an elderly, hypotensive diabetic.<br><b>D & E:</b> Supportive care alone will result in sepsis and death.",
+        ref: "Malaysian CPG Management of Community Acquired Pneumonia in Adults."
+    },
+    {
+        topic: "ENT - Chronic Rhinosinusitis",
+        q: "A 46-year-old man complains of 12 weeks of right-sided facial pressing pain, severe nasal congestion, posterior nasal drip, and hearing loss. He is unable to scuba dive due to ear pressure. Examination: bilateral inflamed turbinates, mild erythema of posterior pharynx, mucopurulent discharge at the middle meatus. He is already using saline spray. What is the most appropriate pharmacological management?",
+        imgBase64: "",
+        options: [
+            "Topical Intranasal Corticosteroid spray",
+            "Topical Oxymetazoline decongestant spray",
+            "Oral Amoxicillin for 7 days",
+            "Oral First-generation Antihistamines",
+            "Oral Prednisolone for 2 weeks"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>Symptoms lasting >12 weeks confirm the diagnosis of Chronic Rhinosinusitis (CRS). The gold standard, first-line evidence-based therapy for CRS is prolonged use of Intranasal Corticosteroid sprays (e.g., Fluticasone) to reduce mucosal inflammation and shrink polyps, facilitating drainage.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Topical decongestants used for >5-7 days cause Rhinitis Medicamentosa (rebound severe congestion) and are contraindicated in chronic use.<br><b>C:</b> Oral antibiotics are not first-line for chronic cases unless an acute bacterial flare is proven.<br><b>D:</b> Antihistamines overly dry out the mucosa, thickening the mucus and worsening the blockage.<br><b>E:</b> Systemic steroids have severe side effects and are reserved only for massive polyposis failing topical sprays.",
+        ref: "Malaysian CPG Management of Rhinosinusitis."
+    },
+    {
+        topic: "ENT - Otomycosis",
+        q: "A 55-year-old male with poorly controlled diabetes complains of severe left ear pain, itching, and a feeling of fullness. He has had similar episodes before. Otoscopy reveals a moist, thickened ear canal filled with greyish-white debris resembling wet newspaper with tiny black spores. What is the most appropriate pharmacological treatment?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bT3Rvc2NvcHk6IEJsYWNrIFNwb3JlcyBpbiBDYW5hbF08L3RleHQ+PC9zdmc+",
+        options: [
+            "Oral Fluconazole",
+            "Topical Clotrimazole drops",
+            "Oral Ciprofloxacin",
+            "Topical Dexamethasone drops",
+            "Ear syringing with warm tap water"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The presence of severe itching, \"wet newspaper\" debris, and black spores (Aspergillus niger) in a diabetic patient is the classic presentation of Otomycosis (fungal ear infection). Thorough aural toileting (suction) followed by Topical Antifungals (Clotrimazole drops/cream) is the definitive treatment.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Systemic antifungals are unnecessary for localized external canal infections and carry hepatotoxic risks.<br><b>C:</b> Antibiotics will kill normal flora and massively worsen the fungal overgrowth.<br><b>D:</b> Steroids dampen the local immune response, accelerating fungal invasion.<br><b>E:</b> Syringing with water introduces moisture, which promotes fungal growth. Dry suction is required.",
+        ref: "iFRACGCP ENT Guidelines / National Antibiotic Guidelines."
+    },
+    {
+        topic: "Ophthalmology - Hyphema",
+        q: "A 30-year-old man was struck directly in the right eye by a rugby ball. He complains of eye pain, redness, and severely reduced vision. Examination: VA Right Eye 6/18. Intraocular pressure (IOP) Right > 23 mmHg, Left 13 mmHg. A visible pooling of blood is seen in the anterior chamber. What is the most appropriate topical medication to prescribe immediately?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bRXllIEltYWdlOiBCbG9vZCBpbiBBbnRlcmlvciBDaGFtYmVyXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Topical Ciprofloxacin (Antibiotic)",
+            "Topical Timolol (Beta-blocker)",
+            "Topical Tetracaine (Anaesthetic)",
+            "Topical Artificial Tears (Lubricant)",
+            "Topical Pilocarpine (Miotic)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The patient has a traumatic Hyphema (blood in anterior chamber) causing acute secondary glaucoma (IOP > 23). The immediate goal is to lower the IOP to prevent optic nerve damage while resting the eye (bed rest, head elevation). Topical Beta-blockers (Timolol) reduce aqueous production and effectively lower IOP.<br><br><h4>Why the others are wrong:</h4><b>A & D:</b> Antibiotics and lubricants do absolutely nothing to lower the dangerous eye pressure.<br><b>C:</b> Anaesthetic drops must never be prescribed for home use as they cause severe corneal melting.<br><b>E:</b> Pilocarpine causes pupillary constriction, which increases traction on the inflamed iris and worsens bleeding/pain.",
+        ref: "Malaysian Primary Care Ophthalmology Handbook."
+    },
+    {
+        topic: "Neurology - Dementia Syndromes",
+        q: "A 40-year-old retired professional boxer is brought in by his family for progressively impaired memory. He is currently dependent on them for basic ADLs and exhibits moderate cognitive impairment. Examination reveals a masked facial expression, resting tremor, and small rigid steps. What is the most likely underlying diagnosis?",
+        imgBase64: "",
+        options: [
+            "Alzheimer's Disease",
+            "Idiopathic Parkinson's Disease",
+            "Chronic Traumatic Encephalopathy (CTE)",
+            "Lewy Body Dementia",
+            "Huntington's Disease"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>A history of repeated concussive head trauma (professional boxing) leading to early-onset dementia and Parkinsonian features (masked facies, rigid gait) is the hallmark of Chronic Traumatic Encephalopathy (formerly known as 'Punch-drunk syndrome' or Dementia Pugilistica).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Alzheimer's rarely presents at age 40 and typically lacks early severe Parkinsonism.<br><b>B:</b> Idiopathic Parkinson's usually occurs in older patients and memory loss (dementia) occurs very late in the disease, not simultaneously.<br><b>D:</b> Lewy Body dementia features visual hallucinations and fluctuating cognition, but lacks the specific trauma history which defines CTE.<br><b>E:</b> Huntington's presents with chorea (dance-like movements), not rigid parkinsonism.",
+        ref: "Malaysian CPG Management of Dementia / Neurology Review."
+    }
+];
+
+let currentIdx = 0;
+let answered = new Array(quizData.length).fill(null);
+let score = { correct: 0, wrong: 0 };
+
+function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentIdx];
+    
+    let imgHtml = q.imgBase64 ? `<div class="img-box"><img src="${q.imgBase64}" alt="Clinical Reference Image"></div>` : '';
+    
+    let optionsHtml = q.options.map((opt, i) => {
+        let extraClass = "";
+        if (answered[currentIdx] !== null) {
+            if (i === q.correct) extraClass = "correct";
+            else if (answered[currentIdx] === i) extraClass = "wrong";
+        }
+        return `<li class="option ${extraClass}" onclick="handleAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="topic-badge">${q.topic}</div>
+        <div class="question-text">${currentIdx + 21}. ${q.q}</div>
+        ${imgHtml}
+        <ul class="options">${optionsHtml}</ul>
+        <div id="justification-box" class="justification" style="display: ${answered[currentIdx] !== null ? 'block' : 'none'}">
+            ${q.justification}
+            <span class="ref">Source: ${q.ref}</span>
+        </div>
+    `;
+    
+    document.getElementById('current-q').innerText = currentIdx + 21;
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    document.getElementById('next-btn').innerText = currentIdx === quizData.length - 1 ? "Finish Part 2" : "Next Question";
+}
+
+window.handleAnswer = function(selectedIdx) {
+    if (answered[currentIdx] !== null) return;
+    
+    answered[currentIdx] = selectedIdx;
+    if (selectedIdx === quizData[currentIdx].correct) {
+        score.correct++;
+    } else {
+        score.wrong++;
+    }
+    
+    document.getElementById('correct-count').innerText = score.correct;
+    document.getElementById('wrong-count').innerText = score.wrong;
+    renderQuestion(); 
+};
+
+window.changeQuestion = function(step) {
+    if (step === 1 && currentIdx === quizData.length - 1) {
+        
+        // --- ADDED LOCAL STORAGE LINKING ---
+        let partID = "part2"; // 
+        
+        let savedProgress = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+        savedProgress[partID] = { 
+            correct: score.correct, 
+            wrong: score.wrong, 
+            total: quizData.length, 
+            completed: true 
+        };
+        localStorage.setItem('gcfm_progress', JSON.stringify(savedProgress));
+        // ------------------------------------
+
+        document.getElementById('quiz-container').innerHTML = `
+            <div style="text-align:center;">
+                <h2 style="color: #27ae60; font-size: 2em;">Module Complete!</h2>
+                <p style="font-size: 1.2em;">Your score has been saved to the dashboard.</p>
+                <p style="font-weight: bold; font-size: 1.5em; background: #ecf0f1; padding: 20px; border-radius: 10px;">
+                    Score: ${score.correct} out of ${quizData.length} (${Math.round(score.correct/quizData.length*100)}%)
+                </p>
+                <br>
+                <a href="index.html" style="display:inline-block; padding: 12px 24px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">Return to Dashboard</a>
+                <button onclick="location.reload()" style="background: #3498db;">Restart Module</button>
+            </div>`;
+        document.getElementById('nav-controls').style.display = 'none';
+        return;
+    }
+    currentIdx += step;
+    renderQuestion();
+};
+
+renderQuestion();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery - Part 5 (Q81-100)</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #c0392b; --success: #27ae60; --danger: #e74c3c; --bg: #fdedec; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--secondary); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-between; font-size: 1.1em; margin-bottom: 20px; font-weight: bold; background: #fadbd8; padding: 15px; border-radius: 8px; }
+        .topic-badge { background: var(--secondary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; text-transform: uppercase; display: inline-block; margin-bottom: 15px; font-weight: bold; }
+        .question-text { font-size: 1.2em; margin-bottom: 20px; font-weight: 600; color: var(--primary); }
+        .img-box { text-align: center; margin-bottom: 20px; }
+        .img-box img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #bdc3c7; background: #eee; }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option { background: #f8f9fa; border: 2px solid #bdc3c7; padding: 15px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.05em; }
+        .option:hover { background: #f5b7b1; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .justification { margin-top: 25px; padding: 20px; background: #fdf2e9; border-left: 6px solid var(--secondary); display: none; border-radius: 4px; }
+        .justification h4 { margin-top: 0; color: var(--secondary); }
+        .ref { display: block; margin-top: 15px; font-weight: bold; font-style: italic; color: #7f8c8d; font-size: 0.9em; }
+        .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; background: var(--secondary); color: white; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #922b21; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GCFM Exam Simulator (Part 5/5)</h1>
+    
+    <div class="stats" id="score-board">
+        <span>Question: <span id="current-q">81</span>/100</span>
+        <span style="color: var(--success);">Correct: <span id="correct-count">0</span></span>
+        <span style="color: var(--danger);">Wrong: <span id="wrong-count">0</span></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-controls">
+        <button id="prev-btn" onclick="changeQuestion(-1)" disabled>Previous</button>
+        <button id="next-btn" onclick="changeQuestion(1)">Finish Exam</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        topic: "Cardiology - Stroke Prevention",
+        q: "A 68-year-old man presents with palpitations. His pulse is irregularly irregular at 110 bpm. ECG shows absent P waves and a narrow QRS complex. He has underlying Hypertension and Type 2 Diabetes. What is the most appropriate pharmacological management to prevent future complications?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bRUNHIEltYWdlOiBBRmliIFBsYWNlaG9sZGVyXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Oral Aspirin 150mg daily",
+            "Oral Clopidogrel 75mg daily",
+            "Direct Oral Anticoagulant (e.g., Rivaroxaban) daily",
+            "Subcutaneous Enoxaparin daily",
+            "Oral Bisoprolol 5mg daily monotherapy"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient has Atrial Fibrillation (AF). His CHA2DS2-VASc score is 3 (Age 65-74 = 1, HTN = 1, DM = 1). A score of ?2 in men warrants systemic anticoagulation to prevent ischemic strokes. Direct Oral Anticoagulants (DOACs) are preferred over Warfarin in Malaysian guidelines due to better safety profiles and no need for INR monitoring.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Antiplatelets (Aspirin/Clopidogrel) are NO LONGER recommended for stroke prevention in AF; they are ineffective at preventing cardiac emboli.<br><b>D:</b> LMWH is for bridging or DVT/PE, not long-term outpatient AF management.<br><b>E:</b> Rate control (Bisoprolol) treats symptoms but fails to protect against stroke, which is the deadliest complication.",
+        ref: "Malaysian CPG Management of Atrial Fibrillation."
+    },
+    {
+        topic: "Obstetrics - Obstetric Emergency",
+        q: "A 32-year-old G1P0 at 34 weeks gestation complains of severe frontal headache and blurring of vision for 1 day. On examination, she has facial edema. BP is 160/110 mmHg. Urine dipstick shows protein 3+. Fetal heart rate is 140 bpm. What is the most immediate appropriate management?",
+        imgBase64: "",
+        options: [
+            "Start oral Methyldopa and review in 1 week",
+            "Order 24-hour urine protein to confirm diagnosis",
+            "Admit immediately to hospital for IV Labetalol and Magnesium Sulphate",
+            "Prescribe low-dose Aspirin and oral Labetalol",
+            "Reassure the mother and induce labor immediately in the clinic"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient has Severe Pre-eclampsia with impending eclampsia (severe headache, visual changes, BP ? 160/110). This is a life-threatening obstetric emergency. Immediate hospital admission for parenteral antihypertensives (IV Labetalol) and seizure prophylaxis (IV Magnesium Sulphate) is mandatory.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Outpatient management for severe pre-eclampsia is completely negligent and risks fatal seizures or stroke.<br><b>B:</b> Waiting 24 hours for urine protein delays life-saving treatment; dipstick 3+ with symptoms is diagnostic enough for emergency action.<br><b>D:</b> Aspirin is for PROPHYLAXIS before 16 weeks, not for treating acute severe disease.<br><b>E:</b> Induction requires hospital care, not a primary care clinic.",
+        ref: "Ministry of Health Malaysia: Management of Hypertensive Disorders in Pregnancy."
+    },
+    {
+        topic: "Gastroenterology - Dyspepsia with Alarm Symptoms",
+        q: "A 58-year-old male complains of upper abdominal burning pain (dyspepsia) for 2 months. He notes that his clothes have become loose, estimating a 5kg unintentional weight loss. He took over-the-counter antacids with no relief. Examination reveals pale conjunctiva. What is the most appropriate next step?",
+        imgBase64: "",
+        options: [
+            "Prescribe a 4-week trial of Oral Omeprazole",
+            "Refer for an urgent Oesophagogastroduodenoscopy (OGDS)",
+            "Perform a Urea Breath Test for H. pylori",
+            "Prescribe Oral Clarithromycin, Amoxicillin, and Pantoprazole",
+            "Order an ultrasound of the abdomen"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient presents with dyspepsia combined with ALARM symptoms: Age > 55, unintentional weight loss, and clinical signs of anaemia (pallor). These strongly suggest a gastric malignancy or bleeding peptic ulcer. Urgent direct visualization with OGDS (endoscopy) and biopsy is mandatory.<br><br><h4>Why the others are wrong:</h4><b>A & C:</b> Empirical PPI trials or H. pylori testing and treating are appropriate for UNCOMPLICATED dyspepsia in younger patients, but are contraindicated if alarm symptoms are present due to the risk of delaying a cancer diagnosis.<br><b>E:</b> USG abdomen is poor at evaluating the mucosal lining of the stomach.",
+        ref: "Malaysian CPG Management of Dyspepsia."
+    },
+    {
+        topic: "Infectious Disease - Leptospirosis",
+        q: "A 30-year-old man presents with high-grade fever, severe calf myalgia, and a severe headache for 4 days. He returned from a jungle trekking and river rafting trip in Pahang a week ago. Examination reveals bilateral conjunctival suffusion (red eyes without purulent discharge). Lab tests show an acute kidney injury (Creatinine 250 umol/L). What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Dengue Fever",
+            "Leptospirosis",
+            "Malaria",
+            "Typhoid Fever",
+            "Scrub Typhus"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The classic triad of high fever, severe calf pain (myalgia), and conjunctival suffusion following freshwater exposure (river rafting) is highly diagnostic of Leptospirosis. The spirochete commonly causes systemic complications like acute kidney injury (Weil's disease).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Dengue shares fever and myalgia, but conjunctival suffusion and severe specific calf pain are more classically Leptospirosis.<br><b>C:</b> Malaria presents with rigors and cyclical fevers, not specifically calf pain/conjunctival suffusion.<br><b>D:</b> Typhoid presents with prolonged fever, relative bradycardia, and GI symptoms (constipation/diarrhea).<br><b>E:</b> Scrub typhus typically presents with a distinct black 'eschar' at the mite bite site.",
+        ref: "Ministry of Health Malaysia: Guidelines for the Diagnosis and Management of Leptospirosis."
+    },
+    {
+        topic: "Dermatology - Steroid Misuse",
+        q: "A 45-year-old woman presents with a widespread, bizarre, ill-defined erythematous scaly plaque on her abdomen. She initially had a small ring-like scaly lesion, for which she purchased a strong steroid cream (Clobetasol propionate) from a pharmacy. The rash initially became less red but then spread extensively with no central clearing. What is the diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2U6IFRpbmVhIEluY29nbml0byBQbGFjZWhvbGRlcl08L3RleHQ+PC9zdmc+",
+        options: [
+            "Psoriasis Vulgaris",
+            "Nummular Eczema",
+            "Tinea Incognito",
+            "Pityriasis Rosea",
+            "Contact Dermatitis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Tinea Incognito is a dermatophyte (fungal) infection whose clinical appearance has been radically altered by the inappropriate use of topical corticosteroids. The steroid suppresses local immunity, allowing the fungus to flourish and spread rapidly, losing its classic 'ringworm' appearance.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Psoriasis presents with thick, silvery scales on extensor surfaces, not exacerbated massively by topical steroids.<br><b>B & E:</b> Eczema and contact dermatitis would profoundly IMPROVE with Clobetasol, not spread and worsen.<br><b>D:</b> Pityriasis rosea has a 'herald patch' followed by a 'Christmas tree' distribution, completely unrelated to steroid misuse.",
+        ref: "Malaysian Primary Care Dermatology Handbook."
+    },
+    {
+        topic: "Paediatrics - Viral Exanthem",
+        q: "A 4-year-old boy presents with fever, excessive drooling, and refusal to eat for 2 days. Examination reveals painful, shallow ulcers on his buccal mucosa and tongue, along with erythematous macules and small vesicles on his palms, soles, and buttocks. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Acyclovir for 7 days",
+            "Prescribe Oral Amoxicillin for 5 days",
+            "Ensure adequate hydration and isolate the child at home",
+            "Admit for Intravenous Immunoglobulins (IVIG)",
+            "Perform a lumbar puncture to rule out meningitis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This is the classic presentation of Hand, Foot, and Mouth Disease (HFMD), primarily caused by Coxsackievirus or Enterovirus. It is a highly contagious but generally self-limiting viral illness. The mainstay of treatment is supportive care (pain relief, ensuring hydration) and strict isolation to prevent outbreaks.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Acyclovir treats Herpes Simplex (which causes gingivostomatitis without hand/foot lesions), but is entirely ineffective against Enteroviruses.<br><b>B:</b> Antibiotics have no role in viral exanthems.<br><b>D:</b> IVIG is reserved for severe neurological/cardiac complications of EV71, which this child does not currently exhibit.<br><b>E:</b> Unnecessary invasive procedure for an uncomplicated classic presentation.",
+        ref: "Ministry of Health Malaysia: Guidelines on HFMD Management."
+    },
+    {
+        topic: "Men's Health - BPH Medical Therapy",
+        q: "A 65-year-old man complains of hesitancy, poor urinary stream, and getting up 4 times a night to urinate (nocturia) for the past year. Digital rectal examination reveals a smooth, enlarged, non-tender prostate with an intact median sulcus. PSA is normal. What is the most appropriate FIRST-LINE medical therapy?",
+        imgBase64: "",
+        options: [
+            "Oral Finasteride",
+            "Oral Tamsulosin",
+            "Refer for immediate Transurethral Resection of the Prostate (TURP)",
+            "Oral Sildenafil",
+            "Oral Tolterodine"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient has symptomatic Benign Prostatic Hyperplasia (BPH). Alpha-1 blockers (e.g., Tamsulosin, Alfuzosin) are the first-line medical therapy. They relax the smooth muscle of the bladder neck and prostate, providing rapid relief of voiding symptoms (within days to weeks).<br><br><h4>Why the others are wrong:</h4><b>A:</b> 5-Alpha Reductase Inhibitors (Finasteride) shrink the prostate but take up to 6 months to show symptomatic benefit. They are often added later or used in huge prostates.<br><b>C:</b> TURP is surgical management reserved for patients failing medical therapy or those with complications (retention, recurrent UTI).<br><b>E:</b> Tolterodine (anti-muscarinic) treats overactive bladder but can worsen urinary retention in men with outflow obstruction.",
+        ref: "Malaysian CPG Management of Benign Prostatic Hyperplasia."
+    },
+    {
+        topic: "Women's Health - Postpartum Contraception",
+        q: "A 28-year-old woman is 6 weeks postpartum and exclusively breastfeeding her baby. She wishes to start a reliable form of oral contraception immediately. What is the most appropriate pharmacological choice?",
+        imgBase64: "",
+        options: [
+            "Combined Oral Contraceptive (COC) pill",
+            "Progestin-Only Pill (POP)",
+            "Transdermal estrogen patch",
+            "Ulipristal acetate",
+            "Wait until her menses returns before starting contraception"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>For a woman who is exclusively breastfeeding, estrogen-containing contraceptives are contraindicated in the first 6 months as they suppress breast milk production and carry an elevated risk of Venous Thromboembolism (VTE) in the postpartum period. A Progestin-Only Pill (POP) is safe, effective, and does not affect lactation.<br><br><h4>Why the others are wrong:</h4><b>A & C:</b> COCs and patches contain estrogen, compromising milk supply and increasing clotting risk.<br><b>D:</b> Ulipristal is emergency contraception, not a daily maintenance pill.<br><b>E:</b> Waiting is dangerous; ovulation can occur before the first postpartum menses, leading to rapid unintended pregnancy.",
+        ref: "WHO Medical Eligibility Criteria for Contraceptive Use / Malaysian FP Guidelines."
+    },
+    {
+        topic: "Geriatrics - Polypharmacy & Falls",
+        q: "An 82-year-old woman was brought in after having two non-injurious falls at home over the past month. She has osteoarthritis, hypertension, and chronic insomnia. Her daily medications include Amlodipine, Hydrochlorothiazide, Lorazepam, and Celecoxib. Which medication is the most significant contributor to her falls and should be tapered off?",
+        imgBase64: "",
+        options: [
+            "Amlodipine",
+            "Hydrochlorothiazide",
+            "Lorazepam",
+            "Celecoxib",
+            "All medications must be stopped immediately"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>According to the Beers Criteria for inappropriate medication use in older adults, Benzodiazepines (like Lorazepam) drastically increase the risk of cognitive impairment, sedation, delayed reaction times, and ataxia. This makes them one of the most dangerous drug classes for causing falls and hip fractures in the elderly. It must be gradually tapered off.<br><br><h4>Why the others are wrong:</h4><b>A, B, D:</b> While diuretics (HCTZ) can cause mild orthostatic hypotension, benzodiazepines carry a much higher direct central nervous system fall risk. Stopping BP meds and NSAIDs completely could worsen her stroke risk and severe OA pain, which also reduces mobility.",
+        ref: "Beers Criteria for Potentially Inappropriate Medication Use in Older Adults."
+    },
+    {
+        topic: "Respiratory - Asthma in Pregnancy",
+        q: "A 26-year-old G1P0 at 16 weeks gestation with known asthma presents to the clinic wheezing. She admits she stopped her daily Inhaled Budesonide 2 weeks ago because she read online that steroids cause fetal birth defects. What is the most evidence-based advice you should provide her?",
+        imgBase64: "",
+        options: [
+            "Her actions were correct; switch to oral Salbutamol only",
+            "Prescribe Oral Prednisolone as maintenance instead of inhaled",
+            "Resume Inhaled Budesonide immediately as uncontrolled asthma risks fetal hypoxia",
+            "Switch the Budesonide to Oral Montelukast",
+            "Tell her to use MDI Salbutamol only when she feels breathless"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Inhaled Corticosteroids (ICS) like Budesonide are the cornerstone of asthma maintenance and are proven completely safe in pregnancy. The risk of NOT treating asthma is far greater: maternal hypoxia during an exacerbation leads directly to fetal hypoxia, growth restriction, and premature labor. She must resume her preventer immediately.<br><br><h4>Why the others are wrong:</h4><b>A & E:</b> Relying purely on bronchodilators (SABA) fails to treat the underlying airway inflammation, guaranteeing severe life-threatening exacerbations.<br><b>B:</b> Oral systemic steroids carry higher systemic side effects (like GDM risk) compared to the localized, minimal-absorption ICS.<br><b>D:</b> Montelukast is an add-on, not a replacement for ICS, especially when step-down is unwarranted in an active exacerbation.",
+        ref: "GINA Guidelines / Malaysian CPG Management of Asthma."
+    },
+    {
+        topic: "Endocrinology - CKD Management",
+        q: "A 60-year-old diabetic man is on Metformin 1g BD and Gliclazide 80mg BD. His latest renal profile shows his eGFR has dropped to 25 mL/min/1.73m2. His HbA1c is 8.5%. What is the most appropriate adjustment to his diabetic medications?",
+        imgBase64: "",
+        options: [
+            "Continue current medications but reduce the doses by half",
+            "Stop Gliclazide only and increase Metformin",
+            "Add an SGLT2-inhibitor (Empagliflozin)",
+            "Stop both Metformin and Gliclazide, and initiate Insulin therapy",
+            "Change Metformin to Acarbose"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>This patient has progressed to Chronic Kidney Disease Stage 4 (eGFR < 30). At this level, Metformin is absolutely contraindicated due to the risk of fatal Lactic Acidosis. Gliclazide (a sulfonylurea) relies heavily on renal clearance; using it at eGFR < 30 risks profound, prolonged hypoglycemia. The safest and most effective option to control his high HbA1c (8.5%) is to switch to Insulin therapy.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Continuing Metformin at eGFR 25 is medical negligence.<br><b>C:</b> SGLT2 inhibitors are brilliant for renal protection, but they lose their glycemic-lowering efficacy at eGFR < 30, and insulin is needed here to bring down the 8.5% HbA1c safely.",
+        ref: "Malaysian CPG Management of Type 2 Diabetes Mellitus 2020."
+    },
+    {
+        topic: "Psychiatry - Severe Depression",
+        q: "A 22-year-old university student presents with pervasive sadness, intense feelings of worthlessness, insomnia, and poor appetite for 3 weeks. During the interview, he tearfully admits that he has purchased a rope and formulated a specific plan to end his life tonight. What is the immediate next step in management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Fluoxetine and review in 1 week",
+            "Ask his friends to keep an eye on him in the dormitory",
+            "Refer immediately to the emergency department / psychiatry for involuntary admission",
+            "Refer for cognitive behavioral therapy (CBT) next month",
+            "Prescribe oral Diazepam to calm him down"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient has Major Depressive Disorder with ACTIVE suicidal ideation and a specific formulated plan. This is a Level 1 Psychiatric Emergency. The risk of completed suicide is imminent. He must not leave the clinic alone; he requires immediate escort to an emergency department for psychiatric evaluation and likely involuntary ward admission for his own safety.<br><br><h4>Why the others are wrong:</h4><b>A & D:</b> SSRIs take 4-6 weeks to work, and therapy next month is useless if the patient dies tonight.<br><b>B:</b> Friends cannot provide the 24/7 medical supervision required to prevent a determined suicide attempt.<br><b>E:</b> Giving a suicidal patient sedatives provides them with a potential means of fatal overdose.",
+        ref: "Malaysian Psychiatric Association: Guidelines on Management of Major Depressive Disorder."
+    },
+    {
+        topic: "Orthopaedics - Trigger Finger",
+        q: "A 55-year-old diabetic woman complains of a painful clicking sensation in her right ring finger when she tries to bend it. Sometimes the finger gets 'stuck' in a flexed position, and she has to use her other hand to manually snap it straight. Examination reveals a tender nodule at the palmar base of the ring finger. What is the most appropriate INITIAL intervention?",
+        imgBase64: "",
+        options: [
+            "Refer for urgent surgical release of the A1 pulley",
+            "Local Corticosteroid injection into the flexor tendon sheath",
+            "Prescribe a 2-week course of Oral Antibiotics",
+            "Splint the finger in a fully flexed position",
+            "Advise vigorous daily hand gripping exercises"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This is the classic presentation of Stenosing Tenosynovitis (Trigger Finger), common in diabetics. It is caused by inflammation and nodule formation catching on the A1 pulley. The most effective, evidence-based initial treatment is a local corticosteroid injection into the tendon sheath, which provides rapid relief and cures the majority of cases.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Surgical release is highly effective but is reserved as a second-line option for cases that fail steroid injections or present with severe, locked deformities.<br><b>C:</b> This is an inflammatory, not infectious, condition.<br><b>D & E:</b> Flexion splinting and vigorous gripping will actually worsen the inflammation and locking.",
+        ref: "Malaysian Primary Care Orthopaedic Guidelines."
+    },
+    {
+        topic: "Neurology - Median Nerve Compression",
+        q: "A 45-year-old administrative clerk complains of numbness and tingling in her right thumb, index, and middle fingers for 3 months. The pain often wakes her up at night, and she has to shake her hand to get relief. Tapping over the volar aspect of the wrist reproduces an electric shock sensation in those fingers. Which nerve is compressed?",
+        imgBase64: "",
+        options: [
+            "Ulnar nerve",
+            "Radial nerve",
+            "Median nerve",
+            "Axillary nerve",
+            "Musculocutaneous nerve"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The sensory distribution of the thumb, index, and middle fingers (lateral 3.5 digits), accompanied by nocturnal pain relieved by 'shaking the hand', is the hallmark of Carpal Tunnel Syndrome. The positive Tinel's sign (tapping the wrist) confirms compression of the Median Nerve as it passes under the flexor retinaculum.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Ulnar nerve compression (Cubital Tunnel) affects the ring and little fingers (medial 1.5 digits).<br><b>B:</b> Radial nerve compression (Saturday night palsy) causes wrist drop and dorsal hand numbness.<br><b>D & E:</b> These nerves innervate the shoulder and upper arm, not the distal hand.",
+        ref: "Malaysian Primary Care Neurology Guidelines."
+    },
+    {
+        topic: "Ophthalmology - AACG",
+        q: "A 60-year-old hyperopic (far-sighted) woman presents to the clinic holding her right eye, complaining of sudden, excruciating eye pain, blurred vision, and seeing 'haloes' around lights. This started 2 hours ago while she was watching a movie in a dark cinema. She also vomited once. Examination shows a 'red eye', a hazy cornea, and a mid-dilated, non-reactive pupil. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Acute Anterior Uveitis",
+            "Herpes Simplex Keratitis",
+            "Acute Angle-Closure Glaucoma",
+            "Optic Neuritis",
+            "Bacterial Conjunctivitis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The triad of sudden severe unilateral eye pain, a hazy (corneal edema) eye, and a mid-dilated fixed pupil, accompanied by systemic vagal symptoms (nausea/vomiting), is pathognomonic for Acute Angle-Closure Glaucoma (AACG). The dark cinema caused pupillary dilation, which blocked the trabecular meshwork in her anatomically shallow (hyperopic) eye, spiking the IOP.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Uveitis presents with a small/irregular pupil, not mid-dilated, and lacks the hazy cornea of high IOP.<br><b>B:</b> HSV keratitis presents with a dendritic ulcer, not a hazy whole cornea and vomiting.<br><b>D:</b> Optic neuritis causes pain on eye movement and vision loss, but the eye remains completely 'white' (not red) and the pupil is normal or has an afferent defect.",
+        ref: "Malaysian Primary Care Ophthalmology Handbook."
+    },
+    {
+        topic: "Paediatrics - Behavioral Disorder",
+        q: "A 7-year-old boy is brought to the clinic by his parents because his primary school teacher complains he cannot sit still, frequently interrupts the class, and loses his pencils daily. The parents report similar severe hyperactive and impulsive behavior at home since he was 4 years old. What is the most appropriate INITIAL assessment tool?",
+        imgBase64: "",
+        options: [
+            "Refer for a brain MRI",
+            "Administer Vanderbilt or Conners Rating Scales to both parents and teachers",
+            "Prescribe a trial of Methylphenidate (Ritalin)",
+            "Order an Electroencephalogram (EEG)",
+            "Perform a formal IQ test"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The child exhibits core symptoms of Attention Deficit Hyperactivity Disorder (ADHD): inattention, hyperactivity, and impulsivity. For a formal diagnosis, DSM-5 criteria mandate that symptoms must be present in two or more settings (e.g., home AND school). Standardized questionnaires like Vanderbilt or Conners scales given to parents and teachers are the gold standard initial assessment tools.<br><br><h4>Why the others are wrong:</h4><b>C:</b> Pharmacotherapy is strictly initiated only AFTER a formal diagnosis is confirmed by a specialist, never empirically in primary care.<br><b>A & D:</b> Imaging (MRI) and EEGs are not diagnostic for ADHD and are only ordered if focal neurological deficits or seizures are suspected.",
+        ref: "Malaysian Paediatric Protocol (MPP) - Child Psychiatry."
+    },
+    {
+        topic: "Emergency - Acute Coronary Syndrome",
+        q: "A 60-year-old man, a chronic heavy smoker, presents to the clinic with crushing central chest pain radiating to his left jaw for 30 minutes, associated with cold sweats. His BP is 150/90, HR 100. You immediately perform a 12-lead ECG which shows ST-segment elevation in leads V2-V5. While waiting for the ambulance to arrive, what is the most appropriate immediate pharmacological management?",
+        imgBase64: "",
+        options: [
+            "Administer IM Diclofenac for pain relief",
+            "Administer chewed Aspirin 300mg, Clopidogrel 300mg, and sublingual GTN",
+            "Administer Oral Paracetamol 1g",
+            "Administer Subcutaneous Enoxaparin only",
+            "Wait for the ambulance paramedics to administer all medications"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient is experiencing an Acute Anterior STEMI (ST elevation in V2-V5). The absolute life-saving priority in primary care before hospital transfer is administering a loading dose of dual antiplatelet therapy (chewed Aspirin 300mg + Clopidogrel 300mg) to inhibit further clot formation, and sublingual Glyceryl Trinitrate (GTN) to dilate coronary arteries.<br><br><h4>Why the others are wrong:</h4><b>A:</b> NSAIDs (Diclofenac) are strictly contraindicated in acute myocardial infarction as they increase mortality and risk of myocardial rupture.<br><b>E:</b> Delaying the antiplatelet loading dose wastes critical 'door-to-needle' time, resulting in irreversible myocardial necrosis.",
+        ref: "Malaysian CPG Management of Acute ST-Elevation Myocardial Infarction."
+    },
+    {
+        topic: "Dermatology - Viral Infection",
+        q: "A 65-year-old man presents with a 2-day history of a painful, burning rash over the right side of his chest. Examination reveals grouped, fluid-filled vesicles on an erythematous base strictly distributed along the right T4 dermatome, sharply stopping at the midline. What is the most appropriate management?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2U6IEhlcnBlcyBab3N0ZXIgRGVybWF0b21lXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Prescribe Topical Acyclovir cream",
+            "Prescribe Oral Acyclovir 800mg 5 times daily for 7 days",
+            "Prescribe Oral Amoxicillin for 7 days",
+            "Prescribe a short course of Oral Prednisolone only",
+            "Reassure him that no treatment is needed"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This is the classic presentation of Herpes Zoster (Shingles) - a painful vesicular rash confined to a single dermatome. Because he presented early (< 72 hours from rash onset), High-Dose Oral Antivirals (Acyclovir 800mg 5x/day) are the gold standard to reduce the severity, duration, and crucially, the risk of debilitating Post-Herpetic Neuralgia (PHN).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Topical acyclovir is completely ineffective for the deep nerve root reactivation of Zoster.<br><b>C:</b> Antibiotics do not treat viruses.<br><b>D:</b> Steroids alone do not kill the virus; if used for pain, they must be given alongside antivirals.",
+        ref: "Malaysian CPG Management of Herpes Zoster."
+    },
+    {
+        topic: "Infectious Disease - Vector-borne",
+        q: "A 28-year-old logging camp worker presents with severe fevers that cyclically occur exactly every 48 hours. The fever is accompanied by severe chills, rigors, and profuse sweating. Examination reveals pale conjunctiva (pallor) and a palpable spleen (splenomegaly) 3cm below the costal margin. What is the most appropriate diagnostic test to confirm the likely etiology?",
+        imgBase64: "",
+        options: [
+            "Dengue NS1 Antigen Rapid Test",
+            "Widal Test",
+            "Thick and thin peripheral blood films",
+            "Leptospira IgM Serology",
+            "Chest X-Ray"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The history of working in the jungle (logging camp), cyclical tertian fever (every 48 hrs), rigors, and signs of hemolysis (pallor/splenomegaly) are highly pathognomonic for Malaria (likely P. vivax or P. falciparum). The absolute gold standard diagnostic test is microscopic examination of Thick and Thin peripheral blood films to identify the parasite species and calculate parasitemia.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Dengue presents with continuous 'saddleback' fever, severe body aches, and rash, not 48-hour cyclical rigors with massive splenomegaly.<br><b>B:</b> Typhoid (Widal test) has step-ladder continuous fever and GI symptoms.<br><b>D:</b> Leptospirosis has calf pain and red eyes, without the strict 48-hour cycle.",
+        ref: "Ministry of Health Malaysia: Management Guidelines for Malaria."
+    },
+    {
+        topic: "Rheumatology - Polyarthritis",
+        q: "A 40-year-old woman complains of pain and stiffness in the small joints of both her hands for the past 3 months. The stiffness is profoundly worse in the morning and takes about 2 hours to 'loosen up'. Examination reveals tender, swollen, boggy proximal interphalangeal (PIP) and metacarpophalangeal (MCP) joints bilaterally. The distal interphalangeal (DIP) joints are spared. What is the most likely diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2U6IFJoZXVtYXRvaWQgQXJ0aHJpdGlzIEhhbmRzXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Osteoarthritis",
+            "Gouty Arthritis",
+            "Rheumatoid Arthritis",
+            "Systemic Lupus Erythematosus (SLE)",
+            "Psoriatic Arthritis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Symmetrical, inflammatory polyarthritis of the small joints of the hands (specifically the MCP and PIP joints), accompanied by prolonged morning stiffness lasting > 1 hour, is the hallmark clinical presentation of Rheumatoid Arthritis (RA).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Osteoarthritis classically affects the DIP joints (Heberden's nodes), causes hard bony swelling (not soft/boggy), and morning stiffness typically lasts < 30 minutes.<br><b>B:</b> Gout is usually an asymmetrical, acute, intensely red/hot monoarthritis (often the big toe).<br><b>D:</b> SLE arthritis is typically non-erosive and less likely to present purely with severe boggy MCP swelling without systemic symptoms like malar rash.",
+        ref: "Malaysian CPG Management of Rheumatoid Arthritis."
+    }
+];
+
+let currentIdx = 0;
+let answered = new Array(quizData.length).fill(null);
+let score = { correct: 0, wrong: 0 };
+
+function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentIdx];
+    
+    let imgHtml = q.imgBase64 ? `<div class="img-box"><img src="${q.imgBase64}" alt="Clinical Reference Image"></div>` : '';
+    
+    let optionsHtml = q.options.map((opt, i) => {
+        let extraClass = "";
+        if (answered[currentIdx] !== null) {
+            if (i === q.correct) extraClass = "correct";
+            else if (answered[currentIdx] === i) extraClass = "wrong";
+        }
+        return `<li class="option ${extraClass}" onclick="handleAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="topic-badge">${q.topic}</div>
+        <div class="question-text">${currentIdx + 81}. ${q.q}</div>
+        ${imgHtml}
+        <ul class="options">${optionsHtml}</ul>
+        <div id="justification-box" class="justification" style="display: ${answered[currentIdx] !== null ? 'block' : 'none'}">
+            ${q.justification}
+            <span class="ref">Source: ${q.ref}</span>
+        </div>
+    `;
+    
+    document.getElementById('current-q').innerText = currentIdx + 81;
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    
+    // Change button text on the absolute last question
+    document.getElementById('next-btn').innerText = currentIdx === quizData.length - 1 ? "Finish 100 Questions!" : "Next Question";
+}
+
+window.handleAnswer = function(selectedIdx) {
+    if (answered[currentIdx] !== null) return;
+    
+    answered[currentIdx] = selectedIdx;
+    if (selectedIdx === quizData[currentIdx].correct) {
+        score.correct++;
+    } else {
+        score.wrong++;
+    }
+    
+    document.getElementById('correct-count').innerText = score.correct;
+    document.getElementById('wrong-count').innerText = score.wrong;
+    renderQuestion(); 
+};
+
+window.changeQuestion = function(step) {
+    if (step === 1 && currentIdx === quizData.length - 1) {
+        
+        // --- ADDED LOCAL STORAGE LINKING ---
+        let partID = "part5"; // 
+        
+        let savedProgress = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+        savedProgress[partID] = { 
+            correct: score.correct, 
+            wrong: score.wrong, 
+            total: quizData.length, 
+            completed: true 
+        };
+        localStorage.setItem('gcfm_progress', JSON.stringify(savedProgress));
+        // ------------------------------------
+
+        document.getElementById('quiz-container').innerHTML = `
+            <div style="text-align:center;">
+                <h2 style="color: #27ae60; font-size: 2em;">Module Complete!</h2>
+                <p style="font-size: 1.2em;">Your score has been saved to the dashboard.</p>
+                <p style="font-weight: bold; font-size: 1.5em; background: #ecf0f1; padding: 20px; border-radius: 10px;">
+                    Score: ${score.correct} out of ${quizData.length} (${Math.round(score.correct/quizData.length*100)}%)
+                </p>
+                <br>
+                <a href="index.html" style="display:inline-block; padding: 12px 24px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">Return to Dashboard</a>
+                <button onclick="location.reload()" style="background: #3498db;">Restart Module</button>
+            </div>`;
+        document.getElementById('nav-controls').style.display = 'none';
+        return;
+    }
+    currentIdx += step;
+    renderQuestion();
+};
+
+renderQuestion();
+</script>
+
+</body>
+</html>

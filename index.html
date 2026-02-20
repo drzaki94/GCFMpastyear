@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery Dashboard</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --danger: #e74c3c; --bg: #f4f7f6; --card-bg: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        .header { background: var(--primary); color: white; padding: 30px 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0 0 10px 0; font-size: 2.5em; }
+        .header p { margin: 0; font-size: 1.1em; opacity: 0.8; }
+        
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        
+        /* Overall Stats Panel */
+        .stats-panel { display: flex; justify-content: space-between; background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; text-align: center; }
+        .stat-box { flex: 1; border-right: 2px solid #eee; }
+        .stat-box:last-child { border-right: none; }
+        .stat-value { font-size: 2.5em; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 0.9em; text-transform: uppercase; color: #7f8c8d; font-weight: bold; }
+        .val-primary { color: var(--primary); }
+        .val-success { color: var(--success); }
+        .val-danger { color: var(--danger); }
+        .val-secondary { color: var(--secondary); }
+
+        /* Modules Grid */
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .module-card { background: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .module-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .module-title { font-size: 1.3em; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
+        .module-desc { color: #7f8c8d; margin-bottom: 20px; font-size: 0.95em; }
+        .module-status { font-weight: bold; margin-bottom: 20px; padding: 8px 12px; border-radius: 6px; display: inline-block; text-align: center; }
+        .status-pending { background: #fdf2e9; color: #e67e22; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .btn-launch { display: block; text-align: center; background: var(--secondary); color: white; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+        .btn-launch:hover { background: #2980b9; }
+
+        /* Footer Controls */
+        .controls { text-align: center; margin-top: 40px; margin-bottom: 40px; }
+        .btn-reset { background: transparent; border: 2px solid var(--danger); color: var(--danger); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-reset:hover { background: var(--danger); color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>GCFM Mastery Dashboard</h1>
+        <p>Your comprehensive 120-Question iFRACGP & MOH Evidence-Based Review</p>
+    </div>
+
+    <div class="container">
+        <div class="stats-panel">
+            <div class="stat-box">
+                <div class="stat-value val-secondary" id="total-progress">0/120</div>
+                <div class="stat-label">Questions Answered</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value val-primary" id="overall-accuracy">0%</div>
+                <div class="stat-label">Overall Accuracy</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value val-success" id="total-correct">0</div>
+                <div class="stat-label">Total Correct</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value val-danger" id="total-wrong">0</div>
+                <div class="stat-label">Total Wrong</div>
+            </div>
+        </div>
+
+        <div class="module-grid">
+            </div>
+
+        <div class="controls">
+            <button class="btn-reset" onclick="resetProgress()">Reset All Progress</button>
+        </div>
+    </div>
+
+    <script>
+        const modules = [
+            { id: 'part1', title: 'Part 1: Clinical Fundamentals', desc: 'Questions 1 - 20', file: 'gcfm_part1.html' },
+            { id: 'part2', title: 'Part 2: Specialty Diagnostics', desc: 'Questions 21 - 40', file: 'gcfm_part2.html' },
+            { id: 'part3', title: 'Part 3: Advanced Presentations', desc: 'Questions 41 - 60', file: 'gcfm_part3.html' },
+            { id: 'part4', title: 'Part 4: CPG Masterclass', desc: 'Questions 61 - 80', file: 'gcfm_part4.html' },
+            { id: 'part5', title: 'Part 5: Acute & Chronic Care', desc: 'Questions 81 - 100', file: 'gcfm_part5.html' },
+            { id: 'part6', title: 'Part 6: Curriculum Gaps', desc: 'Questions 101 - 120', file: 'gcfm_part6.html' }
+        ];
+
+        function loadDashboard() {
+            const progressData = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+            const grid = document.querySelector('.module-grid');
+            grid.innerHTML = '';
+
+            let totalAns = 0;
+            let totalCor = 0;
+            let totalWro = 0;
+
+            modules.forEach(mod => {
+                const data = progressData[mod.id];
+                const isCompleted = data && data.completed;
+                
+                if (isCompleted) {
+                    totalAns += data.total;
+                    totalCor += data.correct;
+                    totalWro += data.wrong;
+                }
+
+                const statusClass = isCompleted ? 'status-completed' : 'status-pending';
+                const statusText = isCompleted ? `Score: ${data.correct}/${data.total} (${Math.round((data.correct/data.total)*100)}%)` : 'Not Started';
+                const btnText = isCompleted ? 'Review / Retake' : 'Start Module';
+
+                const cardHtml = `
+                    <div class="module-card">
+                        <div>
+                            <div class="module-title">${mod.title}</div>
+                            <div class="module-desc">${mod.desc}</div>
+                            <div class="module-status ${statusClass}">${statusText}</div>
+                        </div>
+                        <a href="${mod.file}" class="btn-launch">${btnText}</a>
+                    </div>
+                `;
+                grid.innerHTML += cardHtml;
+            });
+
+            // Update Top Panel
+            document.getElementById('total-progress').innerText = `${totalAns}/120`;
+            document.getElementById('total-correct').innerText = totalCor;
+            document.getElementById('total-wrong').innerText = totalWro;
+            
+            const accuracy = totalAns > 0 ? Math.round((totalCor / totalAns) * 100) : 0;
+            document.getElementById('overall-accuracy').innerText = `${accuracy}%`;
+        }
+
+        function resetProgress() {
+            if(confirm("Are you sure you want to delete all your scores and reset progress?")) {
+                localStorage.removeItem('gcfm_progress');
+                loadDashboard();
+            }
+        }
+
+        // Initialize
+        loadDashboard();
+    </script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery - Part 1 (Q1-20)</title>
+    <style>
+        :root { --primary: #1a252f; --secondary: #2980b9; --success: #27ae60; --danger: #c0392b; --bg: #ecf0f1; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 3px solid var(--secondary); padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-between; font-size: 1.1em; margin-bottom: 20px; font-weight: bold; background: #dfe6e9; padding: 15px; border-radius: 8px; }
+        .topic-badge { background: var(--secondary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; text-transform: uppercase; display: inline-block; margin-bottom: 15px; }
+        .question-text { font-size: 1.2em; margin-bottom: 20px; font-weight: 600; color: var(--primary); }
+        .img-box { text-align: center; margin-bottom: 20px; }
+        .img-box img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #bdc3c7; }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option { background: #f8f9fa; border: 2px solid #bdc3c7; padding: 15px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.05em; }
+        .option:hover { background: #e1f0fa; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .justification { margin-top: 25px; padding: 20px; background: #f1f8ff; border-left: 6px solid var(--secondary); display: none; border-radius: 4px; }
+        .justification h4 { margin-top: 0; color: var(--secondary); }
+        .ref { display: block; margin-top: 15px; font-weight: bold; font-style: italic; color: #7f8c8d; font-size: 0.9em; }
+        .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; background: var(--secondary); color: white; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #1f618d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GCFM Exam Simulator (Part 1/5)</h1>
+    
+    <div class="stats" id="score-board">
+        <span>Question: <span id="current-q">1</span>/20</span>
+        <span style="color: var(--success);">Correct: <span id="correct-count">0</span></span>
+        <span style="color: var(--danger);">Wrong: <span id="wrong-count">0</span></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-controls">
+        <button id="prev-btn" onclick="changeQuestion(-1)" disabled>Previous</button>
+        <button id="next-btn" onclick="changeQuestion(1)">Next Question</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        topic: "Respiratory - Aspiration Pneumonia",
+        q: "A 74-year-old man, bedridden for 3 months due to a stroke with right hemiparesis, presents with fever and cough for 5 days. Examination: alert, comfortable, RR 16, BP and HR normal, SpO2 95% on room air. CXR shows an air-fluid level cavity in the right lower lobe. What is the most important management?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bQ1hSIEltYWdlIFBsYWNlaG9sZGVyXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Refer chest physiotherapy",
+            "Prescribe oral antibiotics",
+            "Admit to hospital for IV antibiotics",
+            "Refer for urgent Bronchoscopy",
+            "Perform percutaneous catheter drainage"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This bedridden, post-stroke patient has developed an aspiration pneumonia leading to a lung abscess (indicated by the air-fluid level on CXR). Due to his high risk of severe complications and the nature of lung abscesses, admission for broad-spectrum IV antibiotics (e.g., IV Amoxicillin-Clavulanate) is mandatory. <br><br><h4>Why the others are wrong:</h4><b>A:</b> Chest physio is supportive, not the primary definitive treatment for a severe bacterial infection.<br><b>B:</b> Oral antibiotics are inadequate for a deep-seated lung abscess in a frail, bedridden patient.<br><b>D:</b> Bronchoscopy is reserved for suspected foreign bodies, malignancies, or non-resolving abscesses, not initial therapy.<br><b>E:</b> Percutaneous drainage is only indicated if medical therapy (IV Abx) fails after prolonged trial or if the abscess is massive and causing tension.",
+        ref: "Malaysian CPG on Management of Community-Acquired Pneumonia in Adults."
+    },
+    {
+        topic: "Haematology - Megaloblastic Anaemia",
+        q: "A 25-year-old female presents with lethargy, exertional dyspnoea, and dizziness. She is a strict vegan. Examination reveals pallor, hypopigmented marks over her arms, and sensory neuropathy over both lower limbs. BP 128/87, PR 86, BMI 17. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Iron Deficiency Anaemia",
+            "Vitamin B12 Deficiency Anaemia",
+            "Folate Deficiency Anaemia",
+            "Thalassaemia Trait",
+            "Autoimmune Haemolytic Anaemia"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>Strict vegans are at high risk for Vitamin B12 deficiency because B12 is found exclusively in animal products. B12 deficiency causes megaloblastic anaemia (lethargy, dyspnoea) AND subacute combined degeneration of the spinal cord (sensory neuropathy).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Iron deficiency causes microcytic anaemia but does NOT cause neurological deficits (neuropathy).<br><b>C:</b> Folate deficiency causes megaloblastic anaemia and is seen in poor diets, but crucially, it does NOT cause sensory neuropathy.<br><b>D:</b> Thalassaemia trait is asymptomatic or presents with mild microcytic anaemia without neuropathy.<br><b>E:</b> Haemolytic anaemia would present with jaundice, not isolated neuropathy and hypopigmentation.",
+        ref: "Ministry of Health Malaysia: Guidelines for the Management of Anaemia."
+    },
+    {
+        topic: "Ophthalmology - Red Eye",
+        q: "A 35-year-old lady complains of intermittent bilateral eye pain and redness with photophobia for 2 weeks. She complains of severe pain upon eye movement. Vision is 6/9 bilaterally. She has underlying Rheumatoid Arthritis on Methotrexate. Pupils are 3mm and reactive. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Allergic Conjunctivitis",
+            "Acute Angle Closure Glaucoma (AACG)",
+            "Scleritis",
+            "Anterior Uveitis",
+            "Dry Eye Syndrome (Sjogren's)"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Scleritis is strongly associated with autoimmune diseases like Rheumatoid Arthritis. The hallmark symptom distinguishing it from other red eye conditions is severe, boring eye pain that worsens significantly with eye movement (due to extraocular muscle insertions into the sclera).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Allergic conjunctivitis causes itching, not severe pain on movement.<br><b>B:</b> AACG presents with a fixed mid-dilated pupil, hazy cornea, and severe unilateral pain/haloes, not bilateral pain on movement with normal pupils.<br><b>D:</b> Anterior uveitis causes photophobia and red eye, but pain typically does NOT worsen significantly with eye movement. Pupils are often small/irregular due to synechiae.<br><b>E:</b> Dry eye causes a gritty sensation, not severe pain on movement.",
+        ref: "iFRACGCP Ophthalmology Module / Malaysian Primary Care Optometry Guidelines."
+    },
+    {
+        topic: "Women's Health - Menopause",
+        q: "A 55-year-old post-menopausal lady presents with dyspareunia for 6 months. She has a history of a right mastectomy for breast cancer 5 years ago, currently in remission. Examination: vulvovaginal atrophy, pale, shiny, dry mucosa with mild redness at the cervix. What is the safest, most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Estradiol vaginal cream",
+            "Oral Hormone Replacement Therapy (HRT)",
+            "Selective Estrogen Receptor Modulator (SERM)",
+            "Non-hormonal vaginal lubricants and moisturizers",
+            "Vaginal dehydroepiandrosterone (DHEA)"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>She is suffering from Genitourinary Syndrome of Menopause (atrophic vaginitis). Because of her history of breast cancer, any form of exogenous estrogen is absolutely contraindicated as it may trigger recurrence. Non-hormonal vaginal lubricants and moisturizers are the first-line, safe options.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Topical and oral estrogens are contraindicated in breast cancer survivors.<br><b>C:</b> SERMs (like Tamoxifen) actually worsen menopausal symptoms like hot flashes and vaginal dryness due to their anti-estrogenic effects on certain tissues.<br><b>E:</b> DHEA converts to active androgens/estrogens locally; its safety in breast cancer is still heavily debated and not recommended first-line.",
+        ref: "Malaysian CPG on Management of Menopause 2022."
+    },
+    {
+        topic: "Respiratory - Acute Rhinosinusitis",
+        q: "A 22-year-old male presents with cough and greenish sputum for 5 days associated with a blocked nose. All vital signs are normal. Lungs have occasional rhonchi that clear completely after coughing. Covid-19 RTK is negative. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Oral Augmentin for 7 days",
+            "Inhaled Salbutamol PRN",
+            "Oral Loratadine",
+            "Topical Oxymetazoline nasal spray",
+            "Oral Prednisolone"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>This is an acute viral rhinosinusitis/upper respiratory tract infection. Symptoms of less than 7-10 days without severe focal signs (like facial pain/high fever) are overwhelmingly viral. The rhonchi clear with coughing, indicating transmitted upper airway sounds (mucus), not asthma. Symptomatic relief with a decongestant (Oxymetazoline) is indicated.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Antibiotics (Augmentin) are not indicated for viral infections < 10 days unless there is double-sickening or severe symptoms.<br><b>B:</b> Salbutamol is for lower airway bronchospasm (asthma). Rhonchi clearing with a cough is an upper airway sign.<br><b>C:</b> Antihistamines (Loratadine) dry secretions but are less effective than topical decongestants for acute viral nasal blockage without an allergic component.<br><b>E:</b> Oral steroids have no role in acute viral upper respiratory infections.",
+        ref: "National Antibiotic Guideline (NAG) Malaysia 2024 / CPG Rhinosinusitis."
+    },
+    {
+        topic: "Orthopaedics - Ankle Sprain",
+        q: "A 25-year-old man fell into a drain 2 hours ago. He complains of a swollen left ankle. He applied ice and a bandage. On examination, the ankle is swollen and bruised, but he is able to weight bear immediately and currently. There is NO bony tenderness over the malleoli. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Order urgent Ankle X-ray",
+            "Continue conservative management (RICE)",
+            "Arrange for MRI to rule out ligament tear",
+            "Refer urgently to orthopaedics",
+            "Apply Plaster of Paris backslab"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>According to the Ottawa Ankle Rules, an X-ray is only required if there is bone tenderness at the posterior edge of the medial/lateral malleoli OR an inability to bear weight both immediately and in the clinic (4 steps). Since he can weight bear and lacks bony tenderness, fracture is highly unlikely. Conservative RICE (Rest, Ice, Compression, Elevation) is sufficient.<br><br><h4>Why the others are wrong:</h4><b>A:</b> X-ray is explicitly not indicated based on negative Ottawa Ankle Rules, saving radiation and cost.<br><b>C:</b> MRI is not indicated in the acute setting of a simple sprain; it is reserved for chronic instability.<br><b>D & E:</b> Ortho referral and casting are overtreatment for a simple sprain without fracture or severe instability.",
+        ref: "Malaysian Primary Care Orthopaedic Guidelines / Ottawa Ankle Rules."
+    },
+    {
+        topic: "Paediatrics - Immunization",
+        q: "A 12-month-old boy is brought in. His last immunization was at 5 months old. He missed his 6-month scheduled vaccines due to recurrent hospital admissions. He is currently well and afebrile. According to the Malaysian National Immunization Program (NIP), what should be given today?",
+        imgBase64: "",
+        options: [
+            "MMR only, and defer pneumococcal vaccine for 1 month",
+            "DTaP-Hib-IPV-HepB + Pneumococcal only",
+            "DTaP-Hib-IPV-HepB + MMR only",
+            "DTaP-Hib-IPV-HepB + MMR + Pneumococcal",
+            "MMR + Pneumococcal vaccine only"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>At 12 months, the NIP mandates the standard MMR vaccine. Because he missed his 6-month vaccines, he must also 'catch up' on his Hexavalent (DTaP-Hib-IPV-HepB) and his Pneumococcal vaccines. The NIP explicitly supports administering all due and missed vaccines simultaneously at different injection sites to prevent delayed immunity.<br><br><h4>Why the others are wrong:</h4><b>A, B, C, E:</b> All these options wrongly defer or omit necessary vaccines. There is no contraindication to giving live (MMR) and inactivated (Hexavalent/Pneumococcal) vaccines on the same day. Delaying them leaves the child vulnerable to deadly diseases like Pertussis and invasive pneumococcal disease.",
+        ref: "Malaysian National Immunization Schedule (NIP) & Catch-up Guidelines 2023."
+    },
+    {
+        topic: "Paediatrics - Post-Viral Complication",
+        q: "A 3-year-old child presents with fever, cough, and runny nose for 5 days. Today, the child developed sudden shortness of breath. Examination reveals a Grade 2/6 systolic murmur over the left sternal edge, bibasal lung crepitations, and a palpable non-tender liver 4cm below the costal margin. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Dengue Fever with plasma leakage",
+            "Viral Myocarditis",
+            "Kawasaki Disease",
+            "Acute Viral Hepatitis",
+            "Severe Pneumonia"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The child has classic signs of acute congestive heart failure (new murmur, bibasal crepitations, hepatomegaly) immediately following a viral prodrome (fever/URTI for 5 days). This is the hallmark presentation of acute viral myocarditis.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Dengue can cause pleural effusions (creps) but does not typically cause a new systolic murmur.<br><b>C:</b> Kawasaki requires 5 days of fever PLUS criteria like rash, conjunctivitis, strawberry tongue, and lymphadenopathy, none of which are present.<br><b>D:</b> Hepatitis causes hepatomegaly and jaundice, but not a murmur or pulmonary edema.<br><b>E:</b> Pneumonia causes crepitations and SOB, but does not cause a new cardiac murmur or congestive hepatomegaly.",
+        ref: "Malaysian Paediatric Protocol (MPP) 4th Edition - Cardiology."
+    },
+    {
+        topic: "Infectious Disease - Contact Screening",
+        q: "A pregnant woman at 18 weeks gestation comes for contact screening. Her husband was recently diagnosed with smear-positive Pulmonary TB. She admits to having a productive cough for 2 weeks. Vital signs are stable. What is the most important investigation to confirm the diagnosis?",
+        imgBase64: "",
+        options: [
+            "Chest X-ray with abdominal shield",
+            "Sputum for Acid Fast Bacilli (AFB)",
+            "CT Thorax",
+            "Sputum Culture and Sensitivity (C&S)",
+            "Mantoux Test (Tuberculin Skin Test)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>In a symptomatic patient (cough > 2 weeks) who is a direct contact of smear-positive PTB, Sputum AFB (or Genexpert MTB/RIF) is the definitive, safest, and most direct diagnostic test. It poses zero radiation risk to the fetus.<br><br><h4>Why the others are wrong:</h4><b>A:</b> While a CXR with a shield can be done in pregnancy, Sputum AFB is more diagnostic for active infectious TB and should be prioritized.<br><b>C:</b> CT Thorax carries excessive, unnecessary radiation for a pregnant woman.<br><b>D:</b> Sputum C&S takes up to 6 weeks for TB; it is used for drug susceptibility, not rapid initial diagnosis.<br><b>E:</b> Mantoux test only shows exposure/latent TB; it cannot differentiate between active and latent TB, nor can it confirm the source of her current cough.",
+        ref: "Malaysian CPG Management of Tuberculosis (4th Edition)."
+    },
+    {
+        topic: "Emergency - Toxicology",
+        q: "A 2-year-old boy is brought to the clinic 30 minutes after his mother suspected he swallowed some pills from his grandmother's pillbox containing Aspirin and Amlodipine. He has no underlying illness. Currently, he is well, comfortable, and vital signs are stable. What is the most important immediate management?",
+        imgBase64: "",
+        options: [
+            "Perform gastric lavage in the primary care clinic",
+            "Administer oral activated charcoal",
+            "Reassure the mother and discharge home",
+            "Refer the child to the hospital emergency department immediately",
+            "Draw blood for salicylate levels in the clinic"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>Amlodipine (a Calcium Channel Blocker) can cause profound, delayed-onset cardiovascular collapse and death in toddlers from just a single tablet. Because of the delayed absorption, the child may look perfectly well now but deteriorate rapidly. Immediate referral via ambulance to a hospital for continuous cardiac monitoring and specific antidotes is mandatory.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Gastric lavage in a toddler carries a massive risk of aspiration and is not routinely recommended, especially outside a hospital setting with intubation capabilities.<br><b>B:</b> Activated charcoal should only be given in a hospital setting where airway protection is guaranteed.<br><b>C:</b> Reassurance is fatal in this high-risk ingestion.<br><b>E:</b> Clinic lab results will take hours; the child needs immediate hospital monitoring.",
+        ref: "Malaysian Guidelines on Management of Poisoning."
+    },
+    {
+        topic: "Emergency - Animal Bite",
+        q: "A 52-year-old woman is bitten by a stray dog on her right calf 30 minutes ago. There is a deep teeth mark. BP is 130/90. You prepare to give her the Tetanus Toxoid vaccine. What is the absolute next most important step in local management?",
+        imgBase64: "",
+        options: [
+            "Perform copious saline and soap lavage of the wound",
+            "Prescribe oral Cloxacillin",
+            "Suture the bite mark closely",
+            "Prescribe topical Fucidin cream",
+            "Send a wound swab for Culture and Sensitivity"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>The most critical immediate step in any animal bite to physically remove rabies viral load and prevent secondary bacterial infection is vigorous washing and flushing of the wound with soap and water/saline for at least 15 minutes.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Cloxacillin covers Staph, but dog bites require coverage for Pasteurella multocida (Oral Augmentin is the drug of choice), but this comes AFTER wound cleaning.<br><b>C:</b> Suturing animal bites is strictly contraindicated as it seals in anaerobic bacteria and increases infection risk.<br><b>D:</b> Topical antibiotics are inadequate for penetrating bite wounds.<br><b>E:</b> Swabs of fresh bites only show skin flora and are not useful; empirical antibiotics are standard.",
+        ref: "Ministry of Health Malaysia: Guidelines for Management of Animal Bites and Rabies."
+    },
+    {
+        topic: "Cardiology - Heart Failure",
+        q: "A 56-year-old diabetic and hypertensive man presents with increasing cough and shortness of breath for 2 weeks. Exam: BP 150/90, HR 110, RR 30, SpO2 92%. JVP is 5cm, apex beat displaced to 6th ICS, gallop rhythm present. Lungs show bibasal crepitations up to the mid-zone and ankle oedema. ECG shows Q waves in II, III, aVF. What is the most appropriate immediate management?",
+        imgBase64: "",
+        options: [
+            "Add oral Hydrochlorothiazide 25mg",
+            "Administer Intravenous Furosemide",
+            "Arrange for urgent Chest X-ray",
+            "Arrange for pleural aspiration",
+            "Send for cardiac enzymes"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient is in acute decompensated heart failure (pulmonary edema) likely secondary to a previous inferior myocardial infarction (Q waves in II, III, aVF). He is hypoxic and fluid overloaded (JVP, crepitations, oedema). Immediate administration of loop diuretics (IV Furosemide) is the life-saving intervention to rapidly offload fluid.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Oral thiazides are too weak and too slow for acute pulmonary edema.<br><b>C & E:</b> While a CXR and cardiac enzymes are necessary workups, they do not treat his acute respiratory distress. Treatment (IV Furosemide) must precede or occur simultaneously with investigations.<br><b>D:</b> Pleural aspiration is for massive pleural effusions, not interstitial pulmonary edema.",
+        ref: "Malaysian CPG Management of Heart Failure 2019."
+    },
+    {
+        topic: "Endocrinology - Secondary Hypertension",
+        q: "A 38-year-old man presents with muscle weakness for 1 month. He has Hypertension for 1 year, currently on Perindopril 8mg, Amlodipine 10mg, and Hydrochlorothiazide 25mg. BP is 158/92. Routine labs reveal a serum Potassium of 2.8 mmol/L. What is the most appropriate next step to determine the underlying cause?",
+        imgBase64: "",
+        options: [
+            "Add Metoprolol",
+            "Order plasma aldosterone-to-renin ratio (ARR)",
+            "Arrange renal artery Doppler ultrasound",
+            "Repeat renal profile after 2 weeks",
+            "Add oral Spironolactone blindly"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>A young patient (38) with resistant hypertension (on 3 drugs) and significant hypokalemia (muscle weakness) is highly suspicious for Primary Hyperaldosteronism (Conn's Syndrome). The screening test of choice is the Aldosterone-to-Renin Ratio (ARR).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Metoprolol does not address the hypokalemia or the root cause.<br><b>C:</b> Renal Doppler checks for Renal Artery Stenosis, which usually presents with high creatinine on ACE-inhibitors and high renin, but ARR is the specific test for suspected Conn's.<br><b>D:</b> Repeating the profile delays urgent diagnosis of severe hypokalemia.<br><b>E:</b> Spironolactone will treat it, but it interferes with the diagnostic ARR test. Diagnosis must be confirmed first if possible.",
+        ref: "Malaysian CPG Management of Hypertension 2023."
+    },
+    {
+        topic: "Psychiatry - Eating Disorders",
+        q: "A 16-year-old girl presents with amenorrhea for 6 months. She has lost significant weight but still claims she feels 'fat and heavy'. She eats very small amounts, but occasionally binges and then forces herself to vomit (purge). She is tired and constipated. Vitals are normal. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Hyperthyroidism",
+            "Major Depressive Disorder",
+            "Bulimia Nervosa",
+            "Anorexia Nervosa",
+            "Post-Traumatic Stress Disorder (PTSD)"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>She has Anorexia Nervosa (binge-eating/purging type). The defining feature that separates Anorexia from Bulimia is significantly low body weight (amenorrhea is a classic sign of severe weight loss/starvation) coupled with body dysmorphia ('feels heavy').<br><br><h4>Why the others are wrong:</h4><b>A:</b> Hyperthyroidism causes weight loss, but not body dysmorphia, intentional starvation, or purging.<br><b>B:</b> Depression can cause weight loss, but lacks the specific fear of gaining weight and body image distortion.<br><b>C:</b> Bulimia Nervosa involves bingeing and purging, but patients typically maintain a normal weight or are overweight. This patient has profound weight loss (amenorrhea).<br><b>E:</b> PTSD requires a history of severe trauma and flashbacks, not primary body dysmorphia.",
+        ref: "DSM-5 Diagnostic Criteria / Malaysian Psychiatry Guidelines."
+    },
+    {
+        topic: "Psychiatry - Trauma",
+        q: "A 28-year-old news reporter complains of irritability, low mood, and recurrent nightmares for two months following the death of her parents in a house fire. She avoids bright lights or fireworks, which trigger palpitations and shortness of breath. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Dysthymic Disorder",
+            "Generalized Anxiety Disorder (GAD)",
+            "Major Depressive Disorder",
+            "Panic Disorder",
+            "Post-Traumatic Stress Disorder (PTSD)"
+        ],
+        correct: 4,
+        justification: "<h4>Why this is correct:</h4>The patient exhibits the classic triad of PTSD occurring more than 1 month after a life-threatening trauma (house fire): 1) Re-experiencing (nightmares), 2) Avoidance (avoiding lights/fireworks), and 3) Hyperarousal (irritability/palpitations).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Dysthymia is chronic mild depression lasting > 2 years.<br><b>B:</b> GAD is generalized worry about everyday events for > 6 months, not tied to a specific trauma.<br><b>C:</b> MDD lacks the specific trauma flashbacks and active avoidance of specific sensory triggers (fireworks).<br><b>D:</b> Panic disorder involves spontaneous panic attacks without a known specific external trigger.",
+        ref: "DSM-5 Diagnostic Criteria."
+    },
+    {
+        topic: "Respiratory - Solitary Pulmonary Nodule",
+        q: "A 60-year-old woman, underlying dyslipidaemia, presents with a productive cough for 3 months. No fever or weight loss. Completed one course of antibiotics. BP 110/70, SpO2 98%. CXR shows a solitary pulmonary nodule at the right apical region with no mass effect. What is the most important next management step?",
+        imgBase64: "",
+        options: [
+            "Admit for intravenous Itraconazole",
+            "Send sputum for Acid-Fast Bacilli (AFB)",
+            "Send sputum for cytology",
+            "Arrange for CT Thorax",
+            "Refer for urgent Bronchoscopy"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>A persistent solitary pulmonary nodule in a 60-year-old requires high suspicion for malignancy. The gold standard next imaging modality to characterize the nodule (size, margins, calcification, lymph nodes) before biopsy is a High-Resolution CT Thorax.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Itraconazole is for fungal infections; a solitary nodule without systemic fungal symptoms/cavitation is unlikely to be purely fungal.<br><b>B:</b> While TB is possible, an apical nodule rather than a cavity warrants structural mapping first.<br><b>C:</b> Sputum cytology has very low sensitivity for peripheral solitary nodules.<br><b>E:</b> Bronchoscopy cannot easily reach peripheral nodules; CT is needed first to guide the biopsy approach (e.g., CT-guided percutaneous biopsy vs bronchoscopy).",
+        ref: "Malaysian Thoracic Society: Management of Pulmonary Nodules."
+    },
+    {
+        topic: "ENT - Rhinosinusitis Management",
+        q: "A 40-year-old lady with underlying Hypertension presents with runny nose and cough for 3 days. She is unable to sleep due to nasal blockage. BP is 140/90. Examination reveals bilaterally enlarged inferior turbinates. What is the most suitable pharmacological treatment?",
+        imgBase64: "",
+        options: [
+            "Topical Oxymetazoline nasal spray",
+            "Syrup Diphenhydramine",
+            "Tablet Chlorpheniramine",
+            "Tablet Promethazine",
+            "Tablet Pseudoephedrine"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>She has acute viral rhinitis with severe nasal congestion. Because she has underlying Hypertension, oral systemic decongestants (like Pseudoephedrine) are contraindicated as they cause vasoconstriction and can spike blood pressure. Topical decongestants (Oxymetazoline) act locally, provide rapid relief, and have minimal systemic absorption if used for < 5 days.<br><br><h4>Why the others are wrong:</h4><b>E:</b> Pseudoephedrine is an oral sympathomimetic that raises blood pressure, strictly cautioned in HTN.<br><b>B, C, D:</b> First-generation antihistamines (Diphenhydramine, Chlorpheniramine) are highly sedating and less effective for pure nasal congestion compared to topical decongestants.",
+        ref: "Malaysian Primary Care Guidelines for Upper Respiratory Tract Infections."
+    },
+    {
+        topic: "Toxicology - Paracetamol Overdose",
+        q: "A 20-year-old female is brought to the clinic after ingesting 20 tablets of Paracetamol (500mg each) about an hour ago. She complains of nausea. On examination, she is confused. BP 120/80, HR 90. What is the most appropriate management at this stage?",
+        imgBase64: "",
+        options: [
+            "Refer to psychiatrist immediately",
+            "Administer oral activated charcoal in clinic",
+            "Administer N-acetylcysteine in clinic",
+            "Send blood for paracetamol level in clinic",
+            "Refer immediately to hospital for gastric lavage and NAC protocol"
+        ],
+        correct: 4,
+        justification: "<h4>Why this is correct:</h4>Ingestion of 10g of paracetamol (20x500mg) is a massive, potentially fatal hepatotoxic dose. Because she is confused and the ingestion was recent (< 1 hour), she requires immediate transfer to an emergency department. In the hospital, she can safely receive gastric lavage/charcoal (with airway protection) and IV N-acetylcysteine (NAC) based on nomogram levels.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Psychiatric evaluation is secondary; medical stabilization and preventing liver failure is the primary priority.<br><b>B:</b> Oral charcoal in a confused patient risks deadly aspiration pneumonitis.<br><b>C & D:</b> Clinics do not have the capacity to monitor severe paracetamol toxicity or run rapid stat paracetamol levels to plot on the Rumack-Matthew nomogram.",
+        ref: "Malaysian Guidelines on Management of Paracetamol Poisoning."
+    },
+    {
+        topic: "Respiratory - Interstitial Lung Disease",
+        q: "A 42-year-old man presents with shortness of breath on exertion and a dry cough for 3 months. He has underlying Rheumatoid Arthritis on Methotrexate. Examination reveals bibasal fine end-inspiratory crepitations with no rhonchi. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Silicosis",
+            "Interstitial Pulmonary Fibrosis",
+            "Sarcoidosis",
+            "Miliary Tuberculosis",
+            "Chronic Obstructive Pulmonary Disease (COPD)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>Patients with Rheumatoid Arthritis, especially those on Methotrexate, are at high risk for developing Interstitial Lung Disease (Pulmonary Fibrosis). The clinical presentation of chronic dry cough, exertional dyspnoea, and the pathognomonic 'fine end-inspiratory 'Velcro' crepitations' strongly point to IPF.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Silicosis requires an occupational history of silica dust exposure (mining, sandblasting).<br><b>C:</b> Sarcoidosis typically presents with hilar lymphadenopathy and systemic signs, less commonly purely fibrotic without other organ involvement.<br><b>D:</b> Miliary TB would present with severe systemic symptoms (high fever, severe weight loss, night sweats).<br><b>E:</b> COPD presents with a productive cough, wheezing/rhonchi, and is associated with heavy smoking, not fine crepitations.",
+        ref: "Malaysian Thoracic Society Guidelines on Interstitial Lung Disease."
+    },
+    {
+        topic: "Metabolic Syndrome - Exercise Prescription",
+        q: "A 40-year-old man comes for a checkup. His father had premature coronary disease at 55. His BMI is 37, waist circumference 94cm, BP 133/88, fasting glucose 6.7, LDL 3.5. What is the most evidence-based advice regarding physical activity to improve his metabolic parameters?",
+        imgBase64: "",
+        options: [
+            "Low-intensity stretching for 20 minutes/day, 3 times a week",
+            "Vigorous intensity exercise 30 minutes/day, 3 times a week",
+            "Moderate intensity exercise 45–60 minutes/day, 5 times a week",
+            "Moderate intensity exercise 15 minutes/day, 5 times a week",
+            "Weightlifting 10 minutes a day, every day"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient has severe obesity and metabolic syndrome. The Malaysian CPG and iFRACGCP guidelines state that for clinically significant weight loss and cardiovascular risk reduction, a higher volume of exercise is required: at least 45 to 60 minutes of moderate-intensity aerobic physical activity on 5 or more days of the week (totalling 225-300 mins/week).<br><br><h4>Why the others are wrong:</h4><b>A & D:</b> These are far below the minimum recommended threshold for cardiovascular benefit (150 mins/week) and will not induce weight loss.<br><b>B:</b> While vigorous exercise is good, starting a severely obese individual (BMI 37) with high cardiac risk directly on vigorous activity without gradual conditioning increases the risk of sudden cardiac events and joint injury.<br><b>E:</b> Resistance training alone for 10 minutes is insufficient for holistic metabolic syndrome management.",
+        ref: "Malaysian CPG Primary Prevention of Cardiovascular Disease / CPG Management of Obesity."
+    }
+];
+
+let currentIdx = 0;
+let answered = new Array(quizData.length).fill(null);
+let score = { correct: 0, wrong: 0 };
+
+function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentIdx];
+    
+    let imgHtml = q.imgBase64 ? `<div class="img-box"><img src="${q.imgBase64}" alt="Clinical Reference Image"></div>` : '';
+    
+    let optionsHtml = q.options.map((opt, i) => {
+        let extraClass = "";
+        if (answered[currentIdx] !== null) {
+            if (i === q.correct) extraClass = "correct";
+            else if (answered[currentIdx] === i) extraClass = "wrong";
+        }
+        return `<li class="option ${extraClass}" onclick="handleAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="topic-badge">${q.topic}</div>
+        <div class="question-text">${currentIdx + 1}. ${q.q}</div>
+        ${imgHtml}
+        <ul class="options">${optionsHtml}</ul>
+        <div id="justification-box" class="justification" style="display: ${answered[currentIdx] !== null ? 'block' : 'none'}">
+            ${q.justification}
+            <span class="ref">Source: ${q.ref}</span>
+        </div>
+    `;
+    
+    document.getElementById('current-q').innerText = currentIdx + 1;
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    document.getElementById('next-btn').innerText = currentIdx === quizData.length - 1 ? "Finish" : "Next Question";
+}
+
+window.handleAnswer = function(selectedIdx) {
+    if (answered[currentIdx] !== null) return;
+    
+    answered[currentIdx] = selectedIdx;
+    if (selectedIdx === quizData[currentIdx].correct) {
+        score.correct++;
+    } else {
+        score.wrong++;
+    }
+    
+    document.getElementById('correct-count').innerText = score.correct;
+    document.getElementById('wrong-count').innerText = score.wrong;
+    renderQuestion(); 
+};
+
+window.changeQuestion = function(step) {
+    if (step === 1 && currentIdx === quizData.length - 1) {
+        
+        // --- ADDED LOCAL STORAGE LINKING ---
+        let partID = "part1"; // 
+        
+        let savedProgress = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+        savedProgress[partID] = { 
+            correct: score.correct, 
+            wrong: score.wrong, 
+            total: quizData.length, 
+            completed: true 
+        };
+        localStorage.setItem('gcfm_progress', JSON.stringify(savedProgress));
+        // ------------------------------------
+
+        document.getElementById('quiz-container').innerHTML = `
+            <div style="text-align:center;">
+                <h2 style="color: #27ae60; font-size: 2em;">Module Complete!</h2>
+                <p style="font-size: 1.2em;">Your score has been saved to the dashboard.</p>
+                <p style="font-weight: bold; font-size: 1.5em; background: #ecf0f1; padding: 20px; border-radius: 10px;">
+                    Score: ${score.correct} out of ${quizData.length} (${Math.round(score.correct/quizData.length*100)}%)
+                </p>
+                <br>
+                <a href="index.html" style="display:inline-block; padding: 12px 24px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">Return to Dashboard</a>
+                <button onclick="location.reload()" style="background: #3498db;">Restart Module</button>
+            </div>`;
+        document.getElementById('nav-controls').style.display = 'none';
+        return;
+    }
+    currentIdx += step;
+    renderQuestion();
+};
+
+renderQuestion();
+</script>
+
+</body>
+</html>

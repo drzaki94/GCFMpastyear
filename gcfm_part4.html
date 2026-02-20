@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery - Part 4 (Q61-80)</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #16a085; --success: #27ae60; --danger: #c0392b; --bg: #e8f8f5; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--secondary); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-between; font-size: 1.1em; margin-bottom: 20px; font-weight: bold; background: #d1f2eb; padding: 15px; border-radius: 8px; }
+        .topic-badge { background: var(--secondary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; text-transform: uppercase; display: inline-block; margin-bottom: 15px; font-weight: bold; }
+        .question-text { font-size: 1.2em; margin-bottom: 20px; font-weight: 600; color: var(--primary); }
+        .img-box { text-align: center; margin-bottom: 20px; }
+        .img-box img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #bdc3c7; background: #eee; }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option { background: #f8f9fa; border: 2px solid #bdc3c7; padding: 15px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.05em; }
+        .option:hover { background: #a3e4d7; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .justification { margin-top: 25px; padding: 20px; background: #e8f8f5; border-left: 6px solid var(--secondary); display: none; border-radius: 4px; }
+        .justification h4 { margin-top: 0; color: var(--secondary); }
+        .ref { display: block; margin-top: 15px; font-weight: bold; font-style: italic; color: #7f8c8d; font-size: 0.9em; }
+        .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; background: var(--secondary); color: white; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #117a65; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GCFM Exam Simulator (Part 4/5)</h1>
+    
+    <div class="stats" id="score-board">
+        <span>Question: <span id="current-q">61</span>/80</span>
+        <span style="color: var(--success);">Correct: <span id="correct-count">0</span></span>
+        <span style="color: var(--danger);">Wrong: <span id="wrong-count">0</span></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-controls">
+        <button id="prev-btn" onclick="changeQuestion(-1)" disabled>Previous</button>
+        <button id="next-btn" onclick="changeQuestion(1)">Next Question</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        topic: "Respiratory - COPD Complication",
+        q: "A 68-year-old man with known COPD presents to the clinic with sudden onset of severe right-sided chest pain and rapidly worsening breathlessness. On examination, he is in severe respiratory distress. BP 90/60, HR 125, SpO2 84%. His trachea is deviated to the left. There is hyperresonance and absent breath sounds over the right lung. What is the most appropriate IMMEDIATE management?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bQ1hSIFBsdXJhTCBMaW5lIC8gVGVuc2lvbiBQbmV1bW90aG9yYXhdPC90ZXh0Pjwvc3ZnPg==",
+        options: [
+            "Arrange an urgent Chest X-Ray",
+            "Perform immediate needle decompression",
+            "Administer nebulised Salbutamol 5mg",
+            "Give Intravenous Hydrocortisone 200mg",
+            "Perform an Arterial Blood Gas (ABG)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient has developed a Tension Pneumothorax (secondary to a ruptured COPD bulla), indicated by sudden deterioration, tracheal deviation, absent breath sounds, and hemodynamic instability (hypotension/tachycardia). This is a clinical diagnosis requiring immediate life-saving needle decompression (2nd intercostal space, mid-clavicular line, or 5th ICS anterior axillary line) before any imaging.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Sending an unstable tension pneumothorax patient to the X-ray department will result in cardiac arrest.<br><b>C & D:</b> Bronchodilators and steroids do not fix the structural trapped air compressing his heart.<br><b>E:</b> ABG delays definitive life-saving mechanical decompression.",
+        ref: "Advanced Trauma Life Support (ATLS) 10th Ed / Malaysian Emergency Guidelines."
+    },
+    {
+        topic: "Respiratory - Acute Bronchitis",
+        q: "A 36-year-old man presents with a productive cough for 2 weeks. He coughs out whitish sputum. He had a sore throat and runny nose one week ago which has now resolved. He took over-the-counter syrup diphenhydramine but the cough persists. He is afebrile. Examination reveals clear lungs with no rhonchi or crepitations. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Amoxicillin for 7 days",
+            "Prescribe Oral Azithromycin for 5 days",
+            "Reassure and advise symptomatic treatment",
+            "Send sputum for Acid-Fast Bacilli (AFB)",
+            "Prescribe Inhaled Corticosteroids"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This is a classic presentation of Acute Viral Bronchitis (cough lasting 1-3 weeks following an upper respiratory tract infection with clear lungs and no systemic signs). The condition is self-limiting. Evidence-based guidelines strictly advise against antibiotics; reassurance and symptomatic care (hydration, honey) are the gold standard.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Antibiotics are not indicated for viral acute bronchitis and contribute to antimicrobial resistance.<br><b>D:</b> Sputum AFB is for chronic cough (> 2-3 weeks) with constitutional symptoms (fever, weight loss), which he lacks.<br><b>E:</b> ICS is for asthma or COPD, not an acute viral post-infectious cough without wheezing.",
+        ref: "National Antibiotic Guidelines (NAG) Malaysia 2024 - Acute Bronchitis."
+    },
+    {
+        topic: "Gastroenterology - Extraesophageal GERD",
+        q: "A 45-year-old lady complains of a persistent dry cough occurring mainly early in the morning for the past 5 days. She also notes a burning sensation in her chest after heavy meals. She has no fever, no history of asthma, and does not smoke. Lungs are clear on auscultation. What is the most appropriate initial management?",
+        imgBase64: "",
+        options: [
+            "Prescribe a trial of a Proton Pump Inhibitor (PPI)",
+            "Order Spirometry testing",
+            "Arrange a Chest X-Ray",
+            "Refer for an urgent Barium Swallow",
+            "Prescribe Oral Antihistamines"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>An early morning dry cough associated with retrosternal burning (heartburn) is highly suggestive of Gastroesophageal Reflux Disease (GERD) with extraesophageal manifestations (reflux triggering the cough reflex). A 4-8 week empirical trial of a PPI (e.g., Omeprazole) is both diagnostic and therapeutic.<br><br><h4>Why the others are wrong:</h4><b>B & C:</b> Given her clear lungs, lack of smoking history, and classic reflux symptoms, respiratory investigations are second-line if she fails the PPI trial.<br><b>D:</b> Barium swallow is reserved for dysphagia (difficulty swallowing) or suspected structural lesions, not uncomplicated GERD.<br><b>E:</b> Antihistamines treat post-nasal drip (allergic rhinitis), not acid reflux.",
+        ref: "Malaysian Primary Care Guidelines on Dyspepsia and GERD."
+    },
+    {
+        topic: "Orthopaedics - Knee Osteoarthritis",
+        q: "A 65-year-old obese female complains of bilateral knee pain for 6 months. The pain is worse at the end of the day and after walking. She experiences mild morning stiffness lasting only 10 minutes. Examination reveals crepitus on movement but no warm effusions. What is the most appropriate FIRST-LINE management?",
+        imgBase64: "",
+        options: [
+            "Administer Intra-articular Corticosteroid injections",
+            "Prescribe Oral Methotrexate",
+            "Advise weight loss and prescribe Oral Paracetamol/Topical NSAIDs",
+            "Refer for urgent Total Knee Replacement",
+            "Arrange an MRI of the knees"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This is the classic presentation of primary Knee Osteoarthritis (mechanical pain worse with use, minimal morning stiffness < 30 mins, crepitus, older age, obesity). First-line management according to CPG is always conservative: weight loss, physiotherapy, and simple analgesia (Paracetamol or topical NSAIDs).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Steroid injections are second-line for acute inflammatory flares when oral analgesia fails.<br><b>B:</b> Methotrexate is for Rheumatoid Arthritis (which would present with prolonged morning stiffness > 1 hour and warm, swollen joints).<br><b>D:</b> Surgery is the absolute last resort after exhaustive conservative failure.<br><b>E:</b> Clinical diagnosis and plain X-rays are sufficient; MRI is unnecessary for standard OA.",
+        ref: "Malaysian CPG Management of Osteoarthritis."
+    },
+    {
+        topic: "ENT - Vertigo",
+        q: "A 50-year-old woman complains of sudden, brief episodes of severe dizziness lasting 20 seconds. It specifically occurs when she rolls over in bed or looks up to reach a high shelf. She feels the room spinning. She has no hearing loss or tinnitus. Which is the most likely diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2U6IERpeC1IYWxscGlrZSBNYW5ldXZlcl08L3RleHQ+PC9zdmc+",
+        options: [
+            "Meniere's Disease",
+            "Vestibular Neuritis",
+            "Benign Paroxysmal Positional Vertigo (BPPV)",
+            "Acoustic Neuroma",
+            "Vertebrobasilar Insufficiency"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Brief episodes (< 1 minute) of intense vertigo triggered exclusively by specific head movements (rolling in bed, looking up) without any audiological symptoms (hearing loss/tinnitus) is the textbook description of Benign Paroxysmal Positional Vertigo (BPPV). It is caused by displaced otoliths in the semicircular canals.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Meniere's disease must include the triad of episodic vertigo, sensorineural hearing loss, and tinnitus.<br><b>B:</b> Vestibular neuritis causes severe, constant vertigo lasting days, not seconds, often post-viral.<br><b>D:</b> Acoustic neuroma presents with progressive unilateral hearing loss and facial nerve issues.<br><b>E:</b> VBI presents with brainstem signs (diplopia, dysarthria, drop attacks).",
+        ref: "iFRACGCP ENT Module / Clinical Guidelines on Vertigo."
+    },
+    {
+        topic: "ENT - Acute Pharyngitis",
+        q: "A 15-year-old boy presents with a high fever (39°C) and severe sore throat for 3 days. He has no cough. Examination reveals enlarged, erythematous tonsils coated in yellowish exudates, and tender anterior cervical lymphadenopathy. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Reassure the mother that it is a viral infection",
+            "Prescribe Oral Penicillin V for 10 days",
+            "Refer for urgent tonsillectomy",
+            "Prescribe Oral Acyclovir",
+            "Perform a Covid-19 swab and observe"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This patient meets all 4 Centor Criteria (Fever, Tonsillar exudate, Tender anterior cervical nodes, Absence of cough). A score of 4 carries a >50% probability of Group A Streptococcus (GAS) infection. To prevent rheumatic fever, the gold standard treatment is a 10-day course of Oral Penicillin V.<br><br><h4>Why the others are wrong:</h4><b>A:</b> The lack of cough and presence of exudates heavily points away from a simple virus toward a bacterial etiology requiring treatment.<br><b>C:</b> Tonsillectomy is for recurrent chronic tonsillitis (e.g., > 7 episodes a year), not an acute first episode.<br><b>D:</b> Acyclovir is for Herpes (which would show vesicles/ulcers, not massive purulent exudate).",
+        ref: "National Antibiotic Guidelines (NAG) Malaysia 2024 - Acute Pharyngitis."
+    },
+    {
+        topic: "Dermatology - Parasitic Infection",
+        q: "A 20-year-old college student living in a dormitory complains of an intensely itchy rash for 2 weeks, which keeps him awake at night. Examination reveals excoriated erythematous papules over the finger web spaces, flexor surfaces of the wrists, and umbilicus. What is the most appropriate treatment?",
+        imgBase64: "",
+        options: [
+            "Topical 1% Hydrocortisone cream",
+            "Topical Permethrin 5% lotion applied whole body",
+            "Oral Antihistamine monotherapy",
+            "Topical Ketoconazole cream",
+            "Topical Mupirocin ointment"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>Intense nocturnal pruritus with a predilection for finger webs, wrists, and the umbilicus in a patient living in close quarters (dormitory) is the classic presentation of Scabies. Topical Permethrin 5% applied from the neck down and left on for 8-12 hours is the first-line curative treatment.<br><br><h4>Why the others are wrong:</h4><b>A & C:</b> Steroids and antihistamines may reduce itching but will not kill the underlying Sarcoptes scabiei mites.<br><b>D:</b> Ketoconazole is an antifungal (for Tinea/fungus), ineffective against mites.<br><b>E:</b> Mupirocin is an antibacterial for impetigo, not scabies.",
+        ref: "Malaysian Primary Care Dermatology Handbook."
+    },
+    {
+        topic: "Neurology - Headache",
+        q: "A 25-year-old woman complains of a severe, unilateral, throbbing headache for the past 6 hours. It is associated with nausea and severe photophobia. She has to lie still in a dark room. She has had similar attacks occurring almost monthly. Her neurological examination is completely normal. What is the most appropriate ACUTE abortive treatment?",
+        imgBase64: "",
+        options: [
+            "Oral Propranolol",
+            "Oral Amitriptyline",
+            "Oral Sumatriptan",
+            "Oral Topiramate",
+            "Intramuscular Morphine"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The patient is experiencing an acute Migraine attack (unilateral, throbbing, nausea, photophobia). For acute, moderate-to-severe abortive therapy, Triptans (like Oral Sumatriptan) are the specific and most effective first-line agents.<br><br><h4>Why the others are wrong:</h4><b>A, B, D:</b> Propranolol, Amitriptyline, and Topiramate are used for migraine PROPHYLAXIS (taken daily to prevent attacks), they are utterly useless for aborting an attack that is already happening.<br><b>E:</b> Opioids are not recommended for migraines due to the high risk of dependence and rebound medication-overuse headaches.",
+        ref: "Malaysian CPG Management of Migraine."
+    },
+    {
+        topic: "Obstetrics - Antenatal Care",
+        q: "A 28-year-old G1P0 at 24 weeks gestation presents for routine follow-up. She is asymptomatic. Her Full Blood Count (FBC) reveals Hb 9.5 g/dL, MCV 72 fL, and MCH 24 pg. Her baseline Hb at booking was 11.5 g/dL. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Arrange for immediate blood transfusion",
+            "Administer Intravenous Iron Dextran",
+            "Prescribe Oral Iron supplementation and give dietary advice",
+            "Prescribe Folic acid 5mg monotherapy",
+            "Screen for Thalassaemia trait immediately"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>She has a mild microcytic, hypochromic anaemia (Hb < 11 in pregnancy, low MCV/MCH) which developed during pregnancy (booking Hb was normal). This strongly indicates physiological Iron Deficiency Anaemia due to fetal demands. The first-line treatment for asymptomatic mild-moderate anaemia is Oral Iron therapy with Vitamin C and dietary modifications.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Transfusion is strictly for severe, symptomatic anaemia (Hb usually < 7) or acute hemorrhage.<br><b>B:</b> IV Iron is reserved for patients who fail, cannot tolerate oral iron, or present very late in the third trimester where rapid correction is needed.<br><b>D:</b> Folic acid treats macrocytic anaemia, not iron deficiency.<br><b>E:</b> Since her booking Hb was normal (11.5), Thalassaemia (which is lifelong) is highly unlikely to be the primary cause of her newly developed microcytosis.",
+        ref: "Ministry of Health Malaysia: Perinatal Care Manual."
+    },
+    {
+        topic: "Obstetrics - Gestational Diabetes",
+        q: "A 30-year-old G2P1 at 26 weeks gestation undergoes a Modified Oral Glucose Tolerance Test (MGTT) due to a family history of diabetes. Her Fasting Blood Glucose is 5.8 mmol/L and her 2-hour post-prandial glucose is 8.5 mmol/L. What is the most appropriate immediate management?",
+        imgBase64: "",
+        options: [
+            "Reassure her as these are normal pregnancy findings",
+            "Diagnose Gestational Diabetes (GDM) and initiate Medical Nutrition Therapy (MNT)",
+            "Start subcutaneous Insulin immediately",
+            "Start Oral Metformin immediately",
+            "Repeat the MGTT in 4 weeks"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>According to Malaysian Perinatal guidelines, GDM is diagnosed if Fasting Glucose is ? 5.1 mmol/L OR 2-hour is ? 7.8 mmol/L. She clearly meets the criteria (5.8 and 8.5). The immediate first-line management for all newly diagnosed, uncomplicated GDM is Medical Nutrition Therapy (MNT/diet control) and lifestyle modification for 1-2 weeks, alongside self-monitoring of blood glucose.<br><br><h4>Why the others are wrong:</h4><b>A:</b> These numbers are pathological for pregnancy and risk macrosomia if ignored.<br><b>C & D:</b> Pharmacotherapy (Insulin or Metformin) is only started if she fails to achieve glucose targets on MNT, or if her fasting was overtly high (>7.0) indicating pre-existing diabetes.<br><b>E:</b> Repeating the test delays necessary treatment.",
+        ref: "Malaysian CPG Management of Diabetes in Pregnancy."
+    },
+    {
+        topic: "Urology - Uncomplicated UTI",
+        q: "A 24-year-old newly married woman presents with pain upon urination (dysuria), urinary frequency, and suprapubic discomfort for 2 days. She has no fever, flank pain, or vaginal discharge. Urine dipstick is positive for nitrites and leukocytes. What is the most appropriate pharmacological treatment?",
+        imgBase64: "",
+        options: [
+            "Oral Ciprofloxacin for 7 days",
+            "Oral Nitrofurantoin for 5 days",
+            "Intravenous Ceftriaxone STAT",
+            "Oral Fluconazole for 3 days",
+            "Delay antibiotics until Urine Culture results are available"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This is classic acute uncomplicated cystitis (UTI). First-line empirical antibiotics according to the Malaysian National Antibiotic Guidelines (NAG) are narrow-spectrum agents like Oral Nitrofurantoin, Cephalexin, or Fosfomycin to preserve broader antibiotics. A 3-to-5 day course is sufficient for women.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Fluoroquinolones (Ciprofloxacin) are no longer first-line for uncomplicated cystitis due to high resistance rates and severe side effects; they are reserved for complicated UTIs or Pyelonephritis.<br><b>C:</b> IV antibiotics are over-treatment for a stable, afebrile patient.<br><b>D:</b> Fluconazole treats yeast, not bacterial UTIs (positive nitrites = Gram-negative bacteria like E. coli).<br><b>E:</b> Empirical treatment should start immediately for symptomatic relief; cultures are not mandatory for simple, first-time cystitis.",
+        ref: "National Antibiotic Guidelines (NAG) Malaysia 2024 - Urinary Tract Infections."
+    },
+    {
+        topic: "Neurology - Facial Weakness",
+        q: "A 40-year-old man wakes up noticing that the right side of his face is drooping. He is unable to close his right eye completely, and water drools from the right side of his mouth when drinking. Crucially, he cannot wrinkle the right side of his forehead. He has no limb weakness or sensory loss. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Ischemic Stroke (Cerebral Infarct)",
+            "Bell's Palsy (LMN Facial Nerve Palsy)",
+            "Trigeminal Neuralgia",
+            "Acoustic Neuroma",
+            "Transient Ischemic Attack (TIA)"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This is a classic Lower Motor Neuron (LMN) CN VII lesion, known as Bell's Palsy. The defining clinical feature that differentiates it from a stroke is the INVOLVEMENT of the forehead. Because the forehead has bilateral upper motor neuron innervation, a stroke (UMN lesion) spares the forehead, allowing the patient to wrinkle it. Bell's Palsy paralyses the entire half of the face, including the forehead.<br><br><h4>Why the others are wrong:</h4><b>A & E:</b> Stroke/TIA would spare the upper forehead and often present with accompanying limb weakness or speech issues.<br><b>C:</b> Trigeminal neuralgia causes excruciating, electric-shock facial pain, not motor paralysis.<br><b>D:</b> Acoustic neuroma presents with hearing loss, tinnitus, and slow progressive facial weakness, not a sudden morning onset.",
+        ref: "Malaysian Primary Care Neurology Guidelines."
+    },
+    {
+        topic: "Rheumatology - Acute Joint Pain",
+        q: "A 50-year-old man presents with sudden onset of excruciating pain, swelling, and redness over his right big toe (1st MTP joint). It woke him up from sleep. He has a history of hypertension and is on Hydrochlorothiazide. He drank alcohol heavily the night before. What is the most appropriate IMMEDIATE management?",
+        imgBase64: "",
+        options: [
+            "Start oral Allopurinol immediately",
+            "Administer Intra-articular Hyaluronic Acid",
+            "Prescribe Oral Colchicine and/or NSAIDs",
+            "Start oral antibiotics for suspected septic arthritis",
+            "Stop Hydrochlorothiazide abruptly"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This is a classic presentation of Acute Gout (Podagra) triggered by alcohol and a thiazide diuretic. The immediate goal is to halt the acute inflammation. High-dose NSAIDs or Colchicine are the first-line evidence-based treatments for an acute flare.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Starting Allopurinol (urate-lowering therapy) DURING an acute attack will rapidly shift uric acid levels, worsening and prolonging the attack. It is only started 2-4 weeks after the flare resolves.<br><b>B:</b> Hyaluronic acid is for osteoarthritis, not acute crystal arthropathy.<br><b>D:</b> Septic arthritis usually affects larger joints (knee) and is accompanied by systemic fever; classic podagra warrants gout therapy first.<br><b>E:</b> Abruptly stopping his BP med isn't the immediate priority; treating the pain is.",
+        ref: "Malaysian CPG Management of Gout."
+    },
+    {
+        topic: "ENT - Rhinitis",
+        q: "A 18-year-old student complains of frequent bouts of violent sneezing, clear watery rhinorrhea, and itchy, watery eyes occurring most mornings for the past year. Examination of the nasal cavity reveals pale, boggy, and swollen turbinates bilaterally. What is the gold standard pharmacological treatment?",
+        imgBase64: "",
+        options: [
+            "Intranasal Corticosteroid spray daily",
+            "Oral Amoxicillin for 7 days",
+            "Oral Pseudoephedrine daily",
+            "Topical Oxymetazoline spray daily for 1 month",
+            "Frequent steam inhalation"
+        ],
+        correct: 0,
+        justification: "<h4>Why this is correct:</h4>The patient has chronic Allergic Rhinitis (sneezing, clear discharge, pale boggy turbinates, eye symptoms). The most effective, evidence-based, first-line maintenance therapy for moderate-to-severe allergic rhinitis is daily Intranasal Corticosteroids (e.g., Fluticasone or Budesonide) to reduce the underlying mucosal immune response.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Antibiotics are useless for an allergic, non-infectious condition.<br><b>C:</b> Oral decongestants have systemic side effects (insomnia, palpitations) and are not suitable for long-term daily maintenance.<br><b>D:</b> Topical decongestants (Oxymetazoline) used for > 5 days cause severe rebound congestion (Rhinitis Medicamentosa) and are strictly contraindicated for chronic use.",
+        ref: "Malaysian CPG Management of Allergic Rhinitis."
+    },
+    {
+        topic: "Endocrinology - Thyroid Disease",
+        q: "A 45-year-old woman complains of progressive weight gain, severe constipation, and feeling cold constantly despite wearing jackets. Her periods have become very heavy. Examination reveals a slow pulse of 55 bpm and delayed relaxation of her ankle reflexes. Lab tests show TSH 15.0 mIU/L (High) and Free T4 8.0 pmol/L (Low). What is the appropriate management?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Carbimazole",
+            "Prescribe Oral Levothyroxine",
+            "Refer for Fine Needle Aspiration (FNA) of the thyroid",
+            "Refer for Radioactive Iodine therapy",
+            "Prescribe Oral Propranolol"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The patient has overt Primary Hypothyroidism (high TSH, low FT4) with classic clinical signs (weight gain, bradycardia, cold intolerance, delayed reflexes). The definitive, life-long treatment is hormone replacement therapy with synthetic T4, Oral Levothyroxine.<br><br><h4>Why the others are wrong:</h4><b>A & D:</b> Carbimazole and Radioactive Iodine are treatments to destroy or suppress the thyroid in HYPERthyroidism, which would be fatal here.<br><b>C:</b> FNA is for investigating discrete thyroid nodules for cancer, not for treating systemic biochemical hypothyroidism.<br><b>E:</b> Propranolol slows the heart rate; she is already bradycardic (55 bpm), so this is contraindicated.",
+        ref: "Malaysian CPG Management of Thyroid Disorders."
+    },
+    {
+        topic: "Paediatrics - Neonatal Jaundice",
+        q: "A 4-day-old exclusively breastfed term neonate is brought to the clinic for yellowish discoloration of the skin. He is active, suckling vigorously, and passing normal yellow stool. His Total Serum Bilirubin (TSB) is 200 umol/L. Mother's blood group is O positive, baby's is A positive. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Stop breastfeeding entirely and switch to formula milk",
+            "Admit for urgent exchange blood transfusion",
+            "Reassure, encourage frequent breastfeeding, and monitor TSB",
+            "Prescribe Oral Phenobarbitone",
+            "Start empirical intravenous antibiotics"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This is likely physiological jaundice or early breastfeeding jaundice (due to slight dehydration/inadequate intake early on). The baby is well, active, and the TSB of 200 at Day 4 is below the phototherapy line for a term, well baby. The gold standard is to reassure the mother and encourage MORE frequent breastfeeding (8-12 times a day) to stimulate bowel movements and excrete bilirubin, while monitoring levels.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Stopping breastfeeding is an outdated, harmful practice. Breast milk is best.<br><b>B:</b> Exchange transfusion is for massive, neurotoxic bilirubin levels (e.g., > 350-400) or severe hemolysis, not a level of 200 in a well baby.<br><b>D & E:</b> Unnecessary medications; the baby is clinically well, ruling out severe sepsis.",
+        ref: "Malaysian Paediatric Protocol (MPP) - Neonatal Jaundice."
+    },
+    {
+        topic: "Orthopaedics - Heel Pain",
+        q: "A 40-year-old teacher complains of severe, sharp pain in her right heel, particularly when she takes her first few steps out of bed in the morning. The pain lessens after walking around for a while but returns if she stands for prolonged periods. Examination shows localized tenderness precisely over the medial calcaneal tuberosity. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Achilles Tendinopathy",
+            "Plantar Fasciitis",
+            "Calcaneal Stress Fracture",
+            "Tarsal Tunnel Syndrome",
+            "Gouty Arthritis"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The hallmark symptom of Plantar Fasciitis is 'first-step' pain in the morning that improves with mild activity but worsens with prolonged weight-bearing. Tenderness is classically localized to the insertion of the fascia at the medial calcaneal tuberosity.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Achilles tendinopathy causes pain at the back of the ankle (posterior heel), not the sole of the foot.<br><b>C:</b> A stress fracture causes pain that progressively worsens with any weight-bearing activity and does not typically improve after the first few morning steps.<br><b>D:</b> Tarsal tunnel causes burning, tingling, and numbness (nerve pain) radiating to the toes, not sharp mechanical heel pain.<br><b>E:</b> Gout typically affects the big toe (podagra) and involves a red, hot, swollen joint.",
+        ref: "Malaysian Primary Care Orthopaedic Guidelines."
+    },
+    {
+        topic: "Endocrinology - Hyperthyroidism",
+        q: "A 30-year-old woman presents with continuous palpitations, fine tremors of the hands, and unintentional weight loss over 2 months despite having a voracious appetite. Examination reveals a smooth, diffuse, non-tender enlargement of her thyroid gland and prominent exophthalmos (protruding eyes). What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Hashimoto's Thyroiditis",
+            "Graves' Disease",
+            "Toxic Multinodular Goitre",
+            "De Quervain's Thyroiditis",
+            "Iodine Deficiency Goitre"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The combination of hyperthyroidism symptoms (weight loss, tremors, palpitations) with a smooth, diffuse goitre and the pathognomonic finding of thyroid eye disease (exophthalmos) is definitive for Graves' Disease (an autoimmune disorder stimulating the TSH receptor).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Hashimoto's primarily causes Hypothyroidism (weight gain, bradycardia).<br><b>C:</b> Toxic multinodular goitre occurs in older patients and presents with an irregular, lumpy thyroid, lacking exophthalmos.<br><b>D:</b> De Quervain's (subacute) thyroiditis presents with a severely PAINFUL, tender thyroid gland following a viral infection.<br><b>E:</b> Iodine deficiency causes a hypothyroid or euthyroid goitre, not severe thyrotoxicosis.",
+        ref: "Malaysian CPG Management of Thyroid Disorders."
+    },
+    {
+        topic: "Paediatrics - Acute Gastroenteritis",
+        q: "A 3-year-old boy has had 5 episodes of watery diarrhea and 2 episodes of vomiting today. He is thirsty and drinks eagerly. His eyes are slightly sunken. Capillary refill time is 2 seconds, and his pulse is normal. He is playing in the clinic. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Administer a rapid Intravenous 0.9% Normal Saline bolus",
+            "Provide Oral Rehydration Salts (ORS) and continue feeding",
+            "Prescribe Oral Loperamide",
+            "Prescribe Oral Amoxicillin",
+            "Withhold all oral intake (nil by mouth) for 12 hours"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>This child has mild-to-some dehydration (thirsty, slightly sunken eyes, but active with normal perfusion). The gold standard treatment recommended by WHO and Malaysian Paediatric Protocols is Oral Rehydration Therapy (ORS) given frequently in small amounts, alongside continued normal feeding/breastfeeding to promote gut healing.<br><br><h4>Why the others are wrong:</h4><b>A:</b> IV fluids are strictly reserved for SEVERE dehydration (lethargy, unarousable, CRT > 3s, weak pulse) or if the child is vomiting everything.<br><b>C:</b> Anti-motility drugs (Loperamide) are absolutely contraindicated in young children due to the risk of fatal toxic megacolon and respiratory depression.<br><b>D:</b> Most AGE is viral (Rotavirus/Norovirus); antibiotics are not indicated unless there is dysentery (bloody stool).<br><b>E:</b> Starving the child worsens malnutrition and delays intestinal mucosal recovery.",
+        ref: "Malaysian Paediatric Protocol (MPP) - Acute Gastroenteritis."
+    },
+    {
+        topic: "Cardiology - Primary Prevention",
+        q: "A 55-year-old diabetic male comes for routine blood tests. He has no history of cardiovascular disease and does not smoke. His fasting lipid profile reveals: Total Cholesterol 6.5 mmol/L, LDL 4.2 mmol/L, HDL 1.0 mmol/L, TG 1.8 mmol/L. His calculated 10-year ASCVD risk is 25% (High Risk). What is the most appropriate pharmacological management?",
+        imgBase64: "",
+        options: [
+            "Advise diet control only and review in 1 year",
+            "Start Oral Fenofibrate",
+            "Start a moderate-to-high intensity Statin (e.g., Atorvastatin)",
+            "Start Oral Ezetimibe monotherapy",
+            "Start Omega-3 fatty acid supplements"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>According to the Malaysian CPG on Dyslipidaemia, a diabetic patient with a 10-year ASCVD risk of > 20% falls into the 'High Risk' category. The absolute first-line pharmacological treatment for primary prevention to lower LDL and stabilize endothelial plaques is a moderate-to-high intensity Statin (e.g., Atorvastatin or Rosuvastatin).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Diet alone is insufficient for high-risk patients; they require immediate statin therapy alongside lifestyle changes.<br><b>B:</b> Fibrates are used primarily for isolated, severe hypertriglyceridemia (usually > 5.6 mmol/L) to prevent pancreatitis, not for LDL reduction.<br><b>D:</b> Ezetimibe is an add-on therapy if statin targets are not met or if statins are completely intolerant; it is not first-line monotherapy.<br><b>E:</b> Omega-3 has limited evidence for primary ASCVD prevention compared to the robust mortality benefits of statins.",
+        ref: "Malaysian CPG Management of Dyslipidaemia 2023."
+    }
+];
+
+let currentIdx = 0;
+let answered = new Array(quizData.length).fill(null);
+let score = { correct: 0, wrong: 0 };
+
+function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentIdx];
+    
+    let imgHtml = q.imgBase64 ? `<div class="img-box"><img src="${q.imgBase64}" alt="Clinical Reference Image"></div>` : '';
+    
+    let optionsHtml = q.options.map((opt, i) => {
+        let extraClass = "";
+        if (answered[currentIdx] !== null) {
+            if (i === q.correct) extraClass = "correct";
+            else if (answered[currentIdx] === i) extraClass = "wrong";
+        }
+        return `<li class="option ${extraClass}" onclick="handleAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="topic-badge">${q.topic}</div>
+        <div class="question-text">${currentIdx + 61}. ${q.q}</div>
+        ${imgHtml}
+        <ul class="options">${optionsHtml}</ul>
+        <div id="justification-box" class="justification" style="display: ${answered[currentIdx] !== null ? 'block' : 'none'}">
+            ${q.justification}
+            <span class="ref">Source: ${q.ref}</span>
+        </div>
+    `;
+    
+    document.getElementById('current-q').innerText = currentIdx + 61;
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    document.getElementById('next-btn').innerText = currentIdx === quizData.length - 1 ? "Finish Part 4" : "Next Question";
+}
+
+window.handleAnswer = function(selectedIdx) {
+    if (answered[currentIdx] !== null) return;
+    
+    answered[currentIdx] = selectedIdx;
+    if (selectedIdx === quizData[currentIdx].correct) {
+        score.correct++;
+    } else {
+        score.wrong++;
+    }
+    
+    document.getElementById('correct-count').innerText = score.correct;
+    document.getElementById('wrong-count').innerText = score.wrong;
+    renderQuestion(); 
+};
+
+window.changeQuestion = function(step) {
+    if (step === 1 && currentIdx === quizData.length - 1) {
+        
+        // --- ADDED LOCAL STORAGE LINKING ---
+        let partID = "part4"; // 
+        
+        let savedProgress = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+        savedProgress[partID] = { 
+            correct: score.correct, 
+            wrong: score.wrong, 
+            total: quizData.length, 
+            completed: true 
+        };
+        localStorage.setItem('gcfm_progress', JSON.stringify(savedProgress));
+        // ------------------------------------
+
+        document.getElementById('quiz-container').innerHTML = `
+            <div style="text-align:center;">
+                <h2 style="color: #27ae60; font-size: 2em;">Module Complete!</h2>
+                <p style="font-size: 1.2em;">Your score has been saved to the dashboard.</p>
+                <p style="font-weight: bold; font-size: 1.5em; background: #ecf0f1; padding: 20px; border-radius: 10px;">
+                    Score: ${score.correct} out of ${quizData.length} (${Math.round(score.correct/quizData.length*100)}%)
+                </p>
+                <br>
+                <a href="index.html" style="display:inline-block; padding: 12px 24px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">Return to Dashboard</a>
+                <button onclick="location.reload()" style="background: #3498db;">Restart Module</button>
+            </div>`;
+        document.getElementById('nav-controls').style.display = 'none';
+        return;
+    }
+    currentIdx += step;
+    renderQuestion();
+};
+
+renderQuestion();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCFM Mastery - Part 3 (Q41-60)</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #8e44ad; --success: #27ae60; --danger: #c0392b; --bg: #f5eef8; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--secondary); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        .stats { display: flex; justify-content: space-between; font-size: 1.1em; margin-bottom: 20px; font-weight: bold; background: #f4ecf7; padding: 15px; border-radius: 8px; }
+        .topic-badge { background: var(--secondary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; text-transform: uppercase; display: inline-block; margin-bottom: 15px; font-weight: bold; }
+        .question-text { font-size: 1.2em; margin-bottom: 20px; font-weight: 600; color: var(--primary); }
+        .img-box { text-align: center; margin-bottom: 20px; }
+        .img-box img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #bdc3c7; background: #eee; }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option { background: #f8f9fa; border: 2px solid #bdc3c7; padding: 15px; margin-bottom: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.05em; }
+        .option:hover { background: #ebdef0; border-color: var(--secondary); }
+        .option.correct { background: #d4edda !important; border-color: var(--success) !important; color: #155724; font-weight: bold; }
+        .option.wrong { background: #f8d7da !important; border-color: var(--danger) !important; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .justification { margin-top: 25px; padding: 20px; background: #fbf8fc; border-left: 6px solid var(--secondary); display: none; border-radius: 4px; }
+        .justification h4 { margin-top: 0; color: var(--secondary); }
+        .ref { display: block; margin-top: 15px; font-weight: bold; font-style: italic; color: #7f8c8d; font-size: 0.9em; }
+        .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; background: var(--secondary); color: white; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #732d91; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GCFM Exam Simulator (Part 3/5)</h1>
+    
+    <div class="stats" id="score-board">
+        <span>Question: <span id="current-q">41</span>/60</span>
+        <span style="color: var(--success);">Correct: <span id="correct-count">0</span></span>
+        <span style="color: var(--danger);">Wrong: <span id="wrong-count">0</span></span>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="nav-buttons" id="nav-controls">
+        <button id="prev-btn" onclick="changeQuestion(-1)" disabled>Previous</button>
+        <button id="next-btn" onclick="changeQuestion(1)">Next Question</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        topic: "Respiratory - Chronic Cough",
+        q: "A 50-year-old man comes to review his spirometry results. He complains of a persistent dry cough for 3 months. He has a past history of Pulmonary Tuberculosis and completed treatment successfully 5 years ago. He is currently on Perindopril for hypertension. Clinical examination is unremarkable. His spirometry is completely normal. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Bronchial Asthma",
+            "Chronic Obstructive Pulmonary Disease (COPD)",
+            "Drug-induced cough",
+            "Recurrent Pulmonary Tuberculosis",
+            "Bronchiectasis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The patient is on Perindopril, an ACE-inhibitor, which is notorious for causing a chronic, dry, persistent cough due to the accumulation of bradykinin in the lungs. A normal spirometry effectively rules out significant obstructive airway diseases (Asthma/COPD) as the primary cause.<br><br><h4>Why the others are wrong:</h4><b>A & B:</b> Asthma and COPD would typically show an obstructive pattern on spirometry (FEV1/FVC < 0.70) and/or bronchodilator reversibility.<br><b>D & E:</b> Recurrent PTB or bronchiectasis would present with a *productive* cough (sputum, hemoptysis), constitutional symptoms, and abnormal lung examination (crepitations), not a pure dry cough with a normal exam.",
+        ref: "Malaysian CPG Management of Hypertension / Primary Care Respiratory Guidelines."
+    },
+    {
+        topic: "Dermatology - Facial Rash",
+        q: "A 54-year-old female presents with a chronic face rash that causes her to apply heavy makeup. The rash is associated with recurrent conjunctivitis and itchy eyes. On examination, there are distinct pustules, papules, and telangiectasia over the bridge of the nose and forehead. The nasolabial folds are involved. What is the most likely diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2UgUGxhY2Vob2xkZXI6IFJvc2FjZWEgUGFwdWxlc108L3RleHQ+PC9zdmc+",
+        options: [
+            "Systemic Lupus Erythematosus (SLE)",
+            "Dermatitis Herpetiformis",
+            "Rosacea",
+            "Allergic Contact Dermatitis",
+            "Acne Vulgaris"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The presence of papules and *pustules* on the central face, involving the nasolabial folds, accompanied by ocular symptoms (conjunctivitis/dry eyes) is pathognomonic for Rosacea (Papulopustular and Ocular subtypes).<br><br><h4>Why the others are wrong:</h4><b>A:</b> The malar rash of SLE strictly *spares* the nasolabial folds and does NOT have pustules.<br><b>D:</b> Contact dermatitis causes scaling, weeping, and intense pruritus, not classic central pustules and telangiectasia.<br><b>E:</b> Acne vulgaris has comedones (blackheads/whiteheads), which are characteristically absent in Rosacea.",
+        ref: "Malaysian Primary Care Dermatology Handbook."
+    },
+    {
+        topic: "Oral Medicine - Mucosal Lesions",
+        q: "A 65-year-old man presents with painful, burning white lesions in his mouth for 6 months, which are severely aggravated by eating spicy food. On examination, there are prominent bilateral reticular white streaks over the buccal mucosa. What is the most likely diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2UgUGxhY2Vob2xkZXI6IFdpY2toYW0gU3RyaWFlXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Aphthous Ulcer",
+            "Oral Leukoplakia",
+            "Oral Lichen Planus",
+            "Pemphigus Vulgaris",
+            "Oral Candidiasis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Bilateral reticular (lace-like) white streaks on the buccal mucosa are known as Wickham striae, which are the hallmark physical finding of Oral Lichen Planus. The condition is an autoimmune-mediated chronic inflammatory disease that typically worsens with spicy or acidic foods.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Aphthous ulcers are distinct round/oval punched-out ulcers with a yellow/grey base and red halo, not reticular streaks.<br><b>B:</b> Leukoplakia is a pre-malignant thick white patch that *cannot* be rubbed off and is usually asymptomatic, unlike the burning pain of lichen planus.<br><b>E:</b> Candidiasis presents as cottage-cheese like plaques that can be scraped off to reveal a bleeding base.",
+        ref: "iFRACGCP ENT & Oral Medicine Module."
+    },
+    {
+        topic: "Infectious Disease - TB & HIV Co-infection",
+        q: "A 35-year-old HIV-infected man presents with a productive cough, fever, and increasing tiredness for 4 weeks. Examination: T 38.7°C, RR 26, widespread crepitations in both lungs. His Sputum AFB is positive (>10 bacilli). His baseline CD4 count is 380 cells/mm?. He is currently naive to all treatments. What is the most appropriate treatment strategy?",
+        imgBase64: "",
+        options: [
+            "Start Antiretroviral Therapy (ART) first, then add Anti-TB drugs after 2 weeks",
+            "Start Anti-TB drugs immediately and defer ART for 2 to 8 weeks",
+            "Start Anti-TB drugs and ART simultaneously on the same day",
+            "Start prophylactic Co-trimoxazole only and observe",
+            "Start Anti-TB drugs and defer ART until the 6-month TB treatment is completed"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>In HIV patients newly diagnosed with active Pulmonary TB, treating the TB is the immediate priority. Anti-TB medications must be started first to reduce the mycobacterial load. Antiretroviral Therapy (ART) is delayed for 2 to 8 weeks (since his CD4 is >50, it can be closer to 8 weeks) to dramatically reduce the risk of a fatal Immune Reconstitution Inflammatory Syndrome (IRIS).<br><br><h4>Why the others are wrong:</h4><b>A & C:</b> Starting ART before or simultaneously with Anti-TB drugs in a patient with active, heavy-load TB will rapidly restore the immune system, triggering severe IRIS (massive lung inflammation and ARDS).<br><b>E:</b> Deferring ART for 6 months is too long and leaves the patient highly vulnerable to other fatal opportunistic infections.",
+        ref: "Malaysian CPG Management of Tuberculosis / Guidelines on Management of HIV Infection."
+    },
+    {
+        topic: "Emergency - Electrical Burn",
+        q: "A 25-year-old construction worker is brought to the clinic immediately after accidentally touching a high-voltage live wire. On examination, he is alert and talking. Vital signs are stable. Capillary refill time is 2 seconds. There is a deep, charred entry wound on his right thumb, but no viable exit wound is found. What is the most important INITIAL investigation?",
+        imgBase64: "",
+        options: [
+            "Full Blood Count (FBC)",
+            "Liver Function Test (LFT)",
+            "Serum Creatine Kinase (CK)",
+            "12-Lead Electrocardiogram (ECG)",
+            "X-Ray of the Right Hand"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>High-voltage electrical injuries can send alternating current (AC) directly through the body to the heart, causing immediate or delayed fatal ventricular arrhythmias (like Ventricular Fibrillation). A 12-lead ECG is mandatory and the most urgent initial investigation for any electrical burn, regardless of how stable the patient appears.<br><br><h4>Why the others are wrong:</h4><b>C:</b> Serum CK is important later to check for rhabdomyolysis (muscle breakdown from deep burns), but arrhythmias will kill the patient in minutes; thus, the ECG takes absolute precedence.<br><b>E:</b> An X-ray evaluates fractures (if thrown by the shock), but cardiac monitoring is the primary life-saving step.",
+        ref: "Advanced Trauma Life Support (ATLS) / Malaysian Emergency Medicine Guidelines."
+    },
+    {
+        topic: "Surgery - Wound Management",
+        q: "A 31-year-old food delivery rider skidded on his motorcycle and presents to your clinic complaining of left lower limb pain. He has no other medical illness. Examination reveals a superficial laceration measuring 10x4 cm over the left shin. There is mild bleeding and the wound is visibly contaminated with road debris and gravel. What is the most appropriate INITIAL management?",
+        imgBase64: "",
+        options: [
+            "Give Medical Certificate (MC) and analgesics",
+            "Perform copious irrigation and mechanical cleaning of the wound",
+            "Suture the wound tightly to stop bleeding",
+            "Administer Anti-Tetanus Toxoid (ATT) STAT",
+            "Prescribe Oral Cloxacillin 500mg QID"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>For any contaminated traumatic wound, the fundamental first step in surgical care is aggressive, copious irrigation (with normal saline) and mechanical removal of debris. Removing the foreign bodies and bacterial load prevents infection and allows proper assessment of the wound bed.<br><br><h4>Why the others are wrong:</h4><b>C:</b> Suturing a dirty wound with debris still inside guarantees a severe abscess/infection. It must be cleaned first.<br><b>D & E:</b> While ATT and antibiotics are necessary adjuncts for a dirty road rash, they cannot penetrate or substitute for the physical removal of dirt and necrotic tissue. Local cleaning always comes first.",
+        ref: "Malaysian Primary Care Wound Care Guidelines."
+    },
+    {
+        topic: "Respiratory - Solitary Cavitary Lesion",
+        q: "A 58-year-old man presents with increasing wheezing and difficulty breathing for 1 month. He has a past history of severe Pulmonary TB 10 years ago. He currently smokes 20 cigarettes a day. He occasionally coughs up streaks of blood. Chest X-ray reveals a large cavity in the right upper lobe containing a solid mass, separated from the cavity wall by an 'air crescent sign'. What is the most likely diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2UgUGxhY2Vob2xkZXI6IEFpciBDcmVzY2VudCBTaWduXTwvdGV4dD48L3N2Zz4=",
+        options: [
+            "Active Pulmonary Tuberculosis",
+            "Bronchogenic Carcinoma",
+            "Lung Abscess",
+            "Aspergilloma (Fungal Ball)",
+            "Sarcoidosis"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>An Aspergilloma (fungal ball) classically forms inside a pre-existing lung cavity (usually left behind by old Tuberculosis). The pathognomonic radiological finding is the 'air crescent sign'—a sliver of air surrounding the mobile fungal ball within the cavity. Hemoptysis is the most common presenting symptom.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Active TB causes cavitation but typically without a distinct mobile inner mass and the specific air crescent sign.<br><b>B:</b> Lung cancer can cavitate (Squamous cell) but does not have a free-moving fungal ball inside.<br><b>C:</b> A lung abscess presents acutely with high fever, foul sputum, and an 'air-fluid level', not an air crescent.",
+        ref: "Malaysian Thoracic Society: Fungal Lung Diseases."
+    },
+    {
+        topic: "Orthopaedics - Peripheral Neuropathy",
+        q: "A 43-year-old man complains of chronic numbness and tingling over his right hand. Examination reveals numbness strictly involving the 4th (ring) and 5th (little) fingers. There is noticeable wasting and weakness of the intrinsic hand muscles (interossei), making it difficult for him to spread his fingers. Which nerve root / plexus component is most likely compressed?",
+        imgBase64: "",
+        options: [
+            "C5 and C6 upper brachial plexus",
+            "C6 and C7 middle brachial plexus",
+            "C8 and T1 lower brachial plexus",
+            "Median Nerve at the carpal tunnel",
+            "Radial Nerve at the spiral groove"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The sensory distribution to the 4th and 5th digits, combined with motor supply to the intrinsic hand muscles (causing wasting and weakness in spreading fingers), is classic for the Ulnar nerve, which originates from the C8 and T1 nerve roots (lower trunk of the brachial plexus).<br><br><h4>Why the others are wrong:</h4><b>A:</b> C5/C6 (Erb's) affects the shoulder and elbow flexors (waiter's tip posture).<br><b>D:</b> Median nerve compression (Carpal Tunnel) causes numbness in the thumb, index, and middle fingers (digits 1-3), not the 4th and 5th.<br><b>E:</b> Radial nerve palsy causes wrist drop and numbness over the anatomical snuffbox, not intrinsic hand wasting.",
+        ref: "Malaysian Primary Care Orthopaedics & Neurology Guidelines."
+    },
+    {
+        topic: "Dermatology - Pre-malignant Lesion",
+        q: "A 77-year-old farmer presents with multiple rough, scaly, erythematous plaques on his severely sun-damaged bald scalp. A biopsy confirms Solar (Actinic) Keratosis. He adamantly declines cryotherapy because he suffered severe, painful blisters from it in the past. What is the most appropriate alternative evidence-based treatment for him?",
+        imgBase64: "",
+        options: [
+            "Topical 1% Hydrocortisone cream",
+            "Topical 5-Fluorouracil (5-FU) cream",
+            "Topical Mupirocin ointment",
+            "Oral Acitretin",
+            "Observe and reassure as it is benign"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>Solar (Actinic) Keratosis is a pre-malignant lesion caused by chronic UV exposure that can progress to Squamous Cell Carcinoma (SCC). If physical destruction (cryotherapy) is refused or there are multiple 'field' lesions, topical chemotherapy with 5-Fluorouracil (5-FU) or Imiquimod is the gold standard alternative.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Steroids are immunosuppressive and will not clear a dysplastic pre-malignant lesion.<br><b>C:</b> Antibiotics (Mupirocin) have no effect on neoplastic cells.<br><b>E:</b> Observation is dangerous because up to 10% of actinic keratoses transform into invasive SCC.",
+        ref: "Malaysian Dermatological Society: Non-Melanoma Skin Cancers."
+    },
+    {
+        topic: "Ophthalmology - Recurrent Red Eye",
+        q: "A 28-year-old lady complains of a painful, red, and watering right eye associated with blurring of vision for 1 day. She reports a history of similar episodes occurring almost annually for the past 3 years. Fluorescein staining reveals a branching, tree-like ulcer on the cornea. What is the most likely diagnosis?",
+        imgBase64: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWVlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNTU1Ij5bSW1hZ2UgUGxhY2Vob2xkZXI6IERlbmRyaXRpYyBVbGNlcl08L3RleHQ+PC9zdmc+",
+        options: [
+            "Acute Angle-Closure Glaucoma",
+            "Bacterial Keratitis",
+            "Herpes Simplex Keratitis",
+            "Anterior Uveitis",
+            "Allergic Conjunctivitis"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>A unilateral red, painful eye with a strictly recurrent nature (annually) and the pathognomonic finding of a branching, 'dendritic' ulcer on fluorescein staining is the textbook presentation of Herpes Simplex Virus (HSV) Keratitis. It requires immediate topical antivirals (Acyclovir).<br><br><h4>Why the others are wrong:</h4><b>A:</b> Glaucoma presents with a cloudy cornea, mid-dilated pupil, and high IOP, not a dendritic ulcer.<br><b>B:</b> Bacterial ulcers are typically round, opaque, and associated with contact lens use, not branching dendritic shapes.<br><b>D:</b> Uveitis does not cause corneal ulceration; it presents with cells/flare in the anterior chamber.",
+        ref: "iFRACGCP Ophthalmology Module."
+    },
+    {
+        topic: "Paediatrics - Seizure",
+        q: "An 18-month-old boy is brought to the clinic after experiencing a generalized tonic-clonic seizure lasting 3 minutes at home. He has a temperature of 39.2°C and a runny nose. By the time he arrives, he is crying but fully conscious. He has no prior history of seizures. Neurological examination is completely normal. What is the most appropriate next management?",
+        imgBase64: "",
+        options: [
+            "Refer for urgent EEG",
+            "Perform a lumbar puncture to rule out meningitis",
+            "Prescribe regular oral Sodium Valproate",
+            "Reassure the parents and manage the fever with Paracetamol",
+            "Admit for IV Phenytoin loading"
+        ],
+        correct: 3,
+        justification: "<h4>Why this is correct:</h4>This is a classic Simple Febrile Seizure (age 6mo-5yrs, generalized, lasting <15 mins, and not recurring within 24 hours). The child has fully recovered and has an obvious viral source (URTI/fever). The gold standard management is reassurance and antipyretics for comfort. Antiepileptic drugs are not indicated.<br><br><h4>Why the others are wrong:</h4><b>A:</b> EEGs are not routinely recommended for simple febrile seizures as they do not predict recurrence.<br><b>B:</b> LP is only indicated if there are meningeal signs (neck stiffness, bulging fontanelle) or if the child is <6-12 months old and unimmunized.<br><b>C & E:</b> Daily anti-epileptics or IV loading carry high toxicity and are contraindicated for simple febrile seizures.",
+        ref: "Malaysian Paediatric Protocol (MPP) 4th Edition - Febrile Seizures."
+    },
+    {
+        topic: "Infectious Disease - Dengue Protocol",
+        q: "A 24-year-old man with confirmed Dengue Fever returns on Day 5 of illness. His fever has resolved today. However, he complains of severe lethargy and abdominal pain. His lab results show: Hematocrit rose from 40% to 49%, and Platelets dropped from 110 to 45 x 10^9/L. What is the most appropriate management?",
+        imgBase64: "",
+        options: [
+            "Discharge him as the fever has resolved",
+            "Prescribe oral antibiotics for secondary infection",
+            "Admit immediately for urgent Intravenous Fluid resuscitation",
+            "Transfuse 2 units of platelets immediately",
+            "Order an urgent Ultrasound of the abdomen and observe"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The patient has entered the critical 'Defervescence Phase' of Dengue (fever resolving but plasma leakage peaking). Warning signs are present: severe abdominal pain, a rapid rise in Hematocrit (>20% from baseline indicates severe plasma leakage), and dropping platelets. Immediate hospital admission for aggressive IV fluid resuscitation is life-saving to prevent Dengue Shock Syndrome.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Discharging a patient in the critical phase of Dengue with rising hematocrit will likely lead to fatal shock.<br><b>D:</b> Prophylactic platelet transfusion is strictly not recommended in Dengue, even at 45k, unless there is massive active bleeding.<br><b>E:</b> USG can confirm ascites, but IV fluid intervention must not be delayed for imaging.",
+        ref: "Malaysian CPG Management of Dengue Infection in Adults (3rd Edition)."
+    },
+    {
+        topic: "Emergency - Syncope",
+        q: "A 65-year-old man presents with a history of fainting this morning while tightly buttoning his shirt collar and shaving his neck. He lost consciousness for 10 seconds and recovered fully with no confusion. He has a history of hypertension on Amlodipine. ECG shows normal sinus rhythm. What is the most likely diagnosis?",
+        imgBase64: "",
+        options: [
+            "Vasovagal Syncope",
+            "Carotid Sinus Hypersensitivity",
+            "Orthostatic Hypotension",
+            "Transient Ischemic Attack (TIA)",
+            "Aortic Stenosis"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>Fainting triggered specifically by mechanical pressure on the neck (tight collars, shaving, head turning) is the hallmark of Carotid Sinus Hypersensitivity. The pressure stimulates the baroreceptors in the carotid sinus, triggering an exaggerated vagal reflex that causes profound bradycardia or hypotension, leading to transient syncope.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Vasovagal syncope is triggered by emotional stress, pain, or prolonged standing, not mechanical neck pressure.<br><b>C:</b> Orthostatic hypotension occurs upon standing up from a seated/lying position.<br><b>D:</b> TIA typically presents with focal neurological deficits (weakness, aphasia) rather than isolated rapid-recovery syncope.",
+        ref: "iFRACGCP Cardiovascular Medicine / Syncope Guidelines."
+    },
+    {
+        topic: "Gastroenterology - Dyspepsia",
+        q: "A 55-year-old man complains of chronic epigastric pain and bloating for 2 months. He frequently takes over-the-counter Ibuprofen for knee osteoarthritis. A Urea Breath Test (UBT) is positive for Helicobacter pylori. What is the most appropriate first-line eradication therapy according to Malaysian guidelines?",
+        imgBase64: "",
+        options: [
+            "Omeprazole + Metronidazole for 7 days",
+            "Omeprazole + Amoxicillin + Clarithromycin for 14 days",
+            "Ranitidine + Amoxicillin + Metronidazole for 14 days",
+            "Omeprazole + Ciprofloxacin for 7 days",
+            "Bismuth subsalicylate alone for 14 days"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>The standard first-line eradication regimen for *Helicobacter pylori* in Malaysia is Triple Therapy: A Proton Pump Inhibitor (PPI like Omeprazole) + Amoxicillin 1g BD + Clarithromycin 500mg BD for 14 days.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Dual therapy is ineffective due to high resistance rates.<br><b>C:</b> H2-receptor antagonists (Ranitidine) are inferior to PPIs for acid suppression in eradication protocols.<br><b>D:</b> Ciprofloxacin is not a first-line agent for H. pylori.<br><b>E:</b> Bismuth is used in quadruple therapy for resistant cases, not as monotherapy.",
+        ref: "Malaysian Society of Gastroenterology: Guidelines on Management of H. pylori."
+    },
+    {
+        topic: "Gynaecology - PCOS",
+        q: "A 24-year-old woman presents with infrequent menses, occurring every 3 to 4 months. She has noticed dark, coarse hair growing on her chin and chest. Her BMI is 31 kg/m?. Pregnancy test is negative. What is the most appropriate initial management to address her primary metabolic and reproductive risks?",
+        imgBase64: "",
+        options: [
+            "Refer for immediate In-Vitro Fertilization (IVF)",
+            "Prescribe Clomiphene citrate",
+            "Recommend a strict weight loss program and Metformin",
+            "Prescribe oral Corticosteroids",
+            "Perform a bilateral oophorectomy"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient meets the Rotterdam Criteria for Polycystic Ovary Syndrome (PCOS): oligo-ovulation (infrequent menses) and hyperandrogenism (hirsutism). Because she is obese (BMI 31), the cornerstone of initial management is lifestyle modification (weight loss) to improve insulin resistance. Metformin is frequently added to restore ovulatory cycles and manage metabolic risks.<br><br><h4>Why the others are wrong:</h4><b>B:</b> Clomiphene is for ovulation induction if she is actively seeking pregnancy, but basic weight loss/Metformin must be addressed first.<br><b>D & E:</b> Corticosteroids and surgery are absolutely contraindicated as primary treatments for PCOS.",
+        ref: "Malaysian CPG Management of Polycystic Ovary Syndrome."
+    },
+    {
+        topic: "Men's Health - Erectile Dysfunction",
+        q: "A 55-year-old man complains of inability to maintain an erection for the past 6 months. He has newly diagnosed Hypertension and Type 2 Diabetes. His current medications are Metformin and Amlodipine. He has no history of angina. Which is the most appropriate pharmacological treatment to prescribe?",
+        imgBase64: "",
+        options: [
+            "Testosterone replacement therapy",
+            "Oral Sildenafil 50mg",
+            "Intracavernosal Alprostadil injection",
+            "Oral Yohimbine",
+            "Change Amlodipine to a Beta-blocker"
+        ],
+        correct: 1,
+        justification: "<h4>Why this is correct:</h4>First-line pharmacological treatment for Erectile Dysfunction (ED) secondary to vascular disease (Diabetes/HTN) is a Phosphodiesterase-5 (PDE5) inhibitor, such as Sildenafil. It is safe to use in stable hypertensive patients who are NOT on nitrates.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Testosterone is only indicated if lab tests prove hypogonadism; it does not treat vascular ED.<br><b>C:</b> Injections are second-line, reserved for patients who fail or cannot tolerate oral PDE5 inhibitors.<br><b>E:</b> Beta-blockers are notorious for *causing* or worsening erectile dysfunction, unlike Amlodipine.",
+        ref: "Malaysian Primary Care Guidelines for Men's Health."
+    },
+    {
+        topic: "Respiratory - Paediatric Infection",
+        q: "A 3-month-old infant is brought to the clinic with a 2-week history of severe coughing. The mother describes the cough as occurring in rapid bursts (paroxysms) followed by a loud, high-pitched indrawing of breath. The child often vomits after these coughing spells. He has only received his BCG at birth. What is the most appropriate antibiotic therapy?",
+        imgBase64: "",
+        options: [
+            "Oral Amoxicillin",
+            "Oral Cefuroxime",
+            "Oral Azithromycin",
+            "Intravenous Ceftriaxone",
+            "No antibiotics, provide cough suppressants"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The clinical triad of paroxysmal cough, inspiratory 'whoop', and post-tussive vomiting in an unimmunized infant is highly diagnostic of Pertussis (Whooping Cough). The gold standard antibiotic to eradicate *Bordetella pertussis* from the nasopharynx and prevent transmission is a Macrolide (e.g., Azithromycin or Clarithromycin).<br><br><h4>Why the others are wrong:</h4><b>A, B, D:</b> Penicillins and Cephalosporins are ineffective against *Bordetella pertussis*.<br><b>E:</b> Cough suppressants are dangerous in infants and do not treat the underlying highly contagious bacterial infection.",
+        ref: "National Antibiotic Guidelines (NAG) Malaysia 2024 - Pertussis."
+    },
+    {
+        topic: "Gynaecology - STI in Pregnancy",
+        q: "A 22-year-old pregnant woman at 12 weeks gestation tests positive for Syphilis (VDRL 1:32, TPHA positive). She has a documented history of severe anaphylaxis to Penicillin. What is the standard evidence-based management according to guidelines?",
+        imgBase64: "",
+        options: [
+            "Prescribe Oral Erythromycin for 14 days",
+            "Prescribe Intravenous Ceftriaxone",
+            "Perform Penicillin Desensitization and administer IM Benzathine Penicillin",
+            "Prescribe Oral Doxycycline for 14 days",
+            "Delay treatment until after delivery"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>Syphilis in pregnancy carries a high risk of congenital syphilis. The ONLY antibiotic proven to reliably cross the placenta and treat the fetus is Penicillin. Therefore, even in cases of severe Penicillin allergy, the global standard of care is inpatient Penicillin desensitization followed by standard IM Benzathine Penicillin.<br><br><h4>Why the others are wrong:</h4><b>A:</b> Erythromycin does not cross the placenta reliably and fails to treat the fetus.<br><b>B:</b> Ceftriaxone carries a cross-reactivity risk with severe Penicillin anaphylaxis and has less efficacy data for fetal protection.<br><b>D:</b> Doxycycline is strictly contraindicated in pregnancy as it causes fetal bone and tooth abnormalities.",
+        ref: "Malaysian Guidelines on Management of Sexually Transmitted Infections."
+    },
+    {
+        topic: "Ophthalmology - Diabetic Complications",
+        q: "A 60-year-old man with poorly controlled Type 2 Diabetes complains of gradually worsening central vision over the past 6 months. Fundoscopy reveals multiple microaneurysms, dot-and-blot hemorrhages, and a ring of yellow hard exudates clustered directly around the macula. What is the most appropriate next management step?",
+        imgBase64: "",
+        options: [
+            "Reassure and optimize HbA1c in the primary care clinic",
+            "Prescribe Timolol eye drops",
+            "Refer to an Ophthalmologist for Anti-VEGF injection or focal laser therapy",
+            "Refer for urgent cataract extraction surgery",
+            "Prescribe oral Acetazolamide"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>The presence of hard exudates specifically at or around the macula, causing central vision loss, indicates clinically significant Diabetic Macular Edema (DME). This requires urgent specialist intervention with Anti-VEGF intraocular injections or focal laser photocoagulation to prevent permanent blindness.<br><br><h4>Why the others are wrong:</h4><b>A:</b> While HbA1c optimization is crucial, it will not reverse existing macular edema; specialist intervention is mandatory.<br><b>B & E:</b> Timolol and Acetazolamide lower intraocular pressure for Glaucoma, not macular edema.<br><b>D:</b> His symptoms and signs are retinal, not lens-related (cataract).",
+        ref: "Malaysian CPG Management of Diabetic Retinopathy."
+    },
+    {
+        topic: "Psychiatry - Postpartum Emergency",
+        q: "A 28-year-old woman is brought to the clinic by her husband 2 weeks after delivering her first baby. She has not slept for 4 days, is highly agitated, and claims that the baby is possessed. She admits to hearing voices telling her to throw the baby out the window. What is the most important immediate management?",
+        imgBase64: "",
+        options: [
+            "Reassure the husband that this is normal 'baby blues'",
+            "Prescribe oral Sertraline and follow up in 1 week",
+            "Separate her from the baby and admit her urgently to a psychiatric ward",
+            "Prescribe oral Lorazepam to help her sleep at home",
+            "Refer to a psychologist for cognitive behavioral therapy"
+        ],
+        correct: 2,
+        justification: "<h4>Why this is correct:</h4>This patient is exhibiting classic signs of Postpartum Psychosis (insomnia, agitation, delusions about the baby, command hallucinations to harm the baby). This is an absolute psychiatric emergency with a high risk of infanticide and suicide. She must be immediately separated from the baby and admitted involuntarily to a psychiatric unit.<br><br><h4>Why the others are wrong:</h4><b>A:</b> 'Baby blues' involves mild tearfulness and resolves within 1-2 weeks; it does NOT feature delusions or hallucinations.<br><b>B & D & E:</b> Outpatient management (SSRIs, sedatives, therapy) is completely negligent given the acute risk to the baby's life. Hospitalization is mandatory.",
+        ref: "Malaysian Psychiatry Guidelines: Management of Perinatal Mental Health Disorders."
+    }
+];
+
+let currentIdx = 0;
+let answered = new Array(quizData.length).fill(null);
+let score = { correct: 0, wrong: 0 };
+
+function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const q = quizData[currentIdx];
+    
+    let imgHtml = q.imgBase64 ? `<div class="img-box"><img src="${q.imgBase64}" alt="Clinical Reference Image"></div>` : '';
+    
+    let optionsHtml = q.options.map((opt, i) => {
+        let extraClass = "";
+        if (answered[currentIdx] !== null) {
+            if (i === q.correct) extraClass = "correct";
+            else if (answered[currentIdx] === i) extraClass = "wrong";
+        }
+        return `<li class="option ${extraClass}" onclick="handleAnswer(${i})">${String.fromCharCode(65 + i)}. ${opt}</li>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="topic-badge">${q.topic}</div>
+        <div class="question-text">${currentIdx + 41}. ${q.q}</div>
+        ${imgHtml}
+        <ul class="options">${optionsHtml}</ul>
+        <div id="justification-box" class="justification" style="display: ${answered[currentIdx] !== null ? 'block' : 'none'}">
+            ${q.justification}
+            <span class="ref">Source: ${q.ref}</span>
+        </div>
+    `;
+    
+    document.getElementById('current-q').innerText = currentIdx + 41;
+    document.getElementById('prev-btn').disabled = currentIdx === 0;
+    document.getElementById('next-btn').innerText = currentIdx === quizData.length - 1 ? "Finish Part 3" : "Next Question";
+}
+
+window.handleAnswer = function(selectedIdx) {
+    if (answered[currentIdx] !== null) return;
+    
+    answered[currentIdx] = selectedIdx;
+    if (selectedIdx === quizData[currentIdx].correct) {
+        score.correct++;
+    } else {
+        score.wrong++;
+    }
+    
+    document.getElementById('correct-count').innerText = score.correct;
+    document.getElementById('wrong-count').innerText = score.wrong;
+    renderQuestion(); 
+};
+
+window.changeQuestion = function(step) {
+    if (step === 1 && currentIdx === quizData.length - 1) {
+        
+        // --- ADDED LOCAL STORAGE LINKING ---
+        let partID = "part3"; // 
+        
+        let savedProgress = JSON.parse(localStorage.getItem('gcfm_progress')) || {};
+        savedProgress[partID] = { 
+            correct: score.correct, 
+            wrong: score.wrong, 
+            total: quizData.length, 
+            completed: true 
+        };
+        localStorage.setItem('gcfm_progress', JSON.stringify(savedProgress));
+        // ------------------------------------
+
+        document.getElementById('quiz-container').innerHTML = `
+            <div style="text-align:center;">
+                <h2 style="color: #27ae60; font-size: 2em;">Module Complete!</h2>
+                <p style="font-size: 1.2em;">Your score has been saved to the dashboard.</p>
+                <p style="font-weight: bold; font-size: 1.5em; background: #ecf0f1; padding: 20px; border-radius: 10px;">
+                    Score: ${score.correct} out of ${quizData.length} (${Math.round(score.correct/quizData.length*100)}%)
+                </p>
+                <br>
+                <a href="index.html" style="display:inline-block; padding: 12px 24px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 10px;">Return to Dashboard</a>
+                <button onclick="location.reload()" style="background: #3498db;">Restart Module</button>
+            </div>`;
+        document.getElementById('nav-controls').style.display = 'none';
+        return;
+    }
+    currentIdx += step;
+    renderQuestion();
+};
+
+renderQuestion();
+</script>
+
+</body>
+</html>
